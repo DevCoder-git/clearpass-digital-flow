@@ -8,7 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { 
   ChevronLeft, ChevronRight, LayoutDashboard, FileText, 
   Users, Settings, LogOut, UserCircle, Building, 
-  Graduation, ClipboardList
+  GraduationCap, ClipboardList
 } from 'lucide-react';
 
 interface SidebarProps {

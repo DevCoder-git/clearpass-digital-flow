@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
+import { ClearanceStatus } from '@/components/shared/StatusBadge';
 
 // Mock data for the department dashboard
 const pendingRequests = [
@@ -17,7 +18,7 @@ const pendingRequests = [
     studentName: 'John Doe',
     departmentName: 'Library',
     requestDate: '2023-03-15',
-    status: 'pending',
+    status: 'pending' as ClearanceStatus,
   },
   {
     id: '2',
@@ -25,7 +26,7 @@ const pendingRequests = [
     studentName: 'Jane Smith',
     departmentName: 'Library',
     requestDate: '2023-03-14',
-    status: 'pending',
+    status: 'pending' as ClearanceStatus,
   },
   {
     id: '3',
@@ -33,7 +34,7 @@ const pendingRequests = [
     studentName: 'Michael Johnson',
     departmentName: 'Library',
     requestDate: '2023-03-13',
-    status: 'pending',
+    status: 'pending' as ClearanceStatus,
   },
 ];
 
@@ -44,7 +45,7 @@ const recentlyProcessed = [
     studentName: 'Emily Davis',
     departmentName: 'Library',
     requestDate: '2023-03-10',
-    status: 'approved',
+    status: 'approved' as ClearanceStatus,
   },
   {
     id: '5',
@@ -52,7 +53,7 @@ const recentlyProcessed = [
     studentName: 'Robert Wilson',
     departmentName: 'Library',
     requestDate: '2023-03-09',
-    status: 'rejected',
+    status: 'rejected' as ClearanceStatus,
     comment: 'Books not returned',
   },
 ];
