@@ -8,6 +8,8 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "@/pages/Index";
 import Login from "@/pages/Login";
 import Dashboard from "@/pages/Dashboard";
+import Requests from "@/pages/Requests";
+import Settings from "@/pages/Settings";
 import AppLayout from "@/components/layout/AppLayout";
 import ClearanceRequest from "@/components/clearance/ClearanceRequest";
 import NotFound from "@/pages/NotFound";
@@ -29,7 +31,8 @@ const App = () => {
               <Route path="/dashboard" element={<AppLayout />}>
                 <Route index element={<Dashboard />} />
                 <Route path="apply" element={<ClearanceRequest />} />
-                {/* Additional routes for dashboard pages can be added here */}
+                <Route path="requests" element={<Requests />} />
+                <Route path="settings" element={<Settings />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
