@@ -6,6 +6,7 @@ import { FileText, ChevronRight, Clock, CheckCircle, XCircle } from 'lucide-reac
 import RequestList from '@/components/clearance/RequestList';
 import DashboardCard from '@/components/shared/DashboardCard';
 import { Progress } from '@/components/ui/progress';
+import { ClearanceStatus } from '@/components/shared/StatusBadge';
 
 // Mock data for the student dashboard
 const recentRequests = [
@@ -15,7 +16,7 @@ const recentRequests = [
     studentName: 'John Doe',
     departmentName: 'Library',
     requestDate: '2023-03-15',
-    status: 'approved',
+    status: 'approved' as ClearanceStatus,
   },
   {
     id: '2',
@@ -23,7 +24,7 @@ const recentRequests = [
     studentName: 'John Doe',
     departmentName: 'Accounts Department',
     requestDate: '2023-03-15',
-    status: 'pending',
+    status: 'pending' as ClearanceStatus,
   },
   {
     id: '3',
@@ -31,7 +32,7 @@ const recentRequests = [
     studentName: 'John Doe',
     departmentName: 'Hostel',
     requestDate: '2023-03-15',
-    status: 'rejected',
+    status: 'rejected' as ClearanceStatus,
     comment: 'Outstanding fees need to be cleared'
   },
 ];
