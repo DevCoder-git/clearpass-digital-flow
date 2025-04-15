@@ -44,39 +44,43 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // Fetch the current user on mount
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
+        console.log('🔍 Attempting to fetch current user...');
         const storedUser = localStorage.getItem('clearpass_user');
         
         if (storedUser) {
-          // Temporarily use stored user while we attempt to verify with backend
           const parsedUser = JSON.parse(storedUser);
           setCurrentUser(parsedUser);
           setRole(parsedUser.role);
           setIsAuthenticated(true);
           
-          // Try to validate with backend
-          const apiUser = await getCurrentUser();
-          
-          if (apiUser) {
-            // Update with fresh data if available
-            const user = {
-              id: apiUser.id,
-              name: `${apiUser.first_name} ${apiUser.last_name}`.trim() || apiUser.username,
-              email: apiUser.email,
-              role: apiUser.role as UserRole
-            };
+          try {
+            console.log('🌐 Trying to validate user with backend...');
+            const apiUser = await getCurrentUser();
             
-            setCurrentUser(user);
-            setRole(user.role);
-            localStorage.setItem('clearpass_user', JSON.stringify(user));
+            if (apiUser) {
+              console.log('✅ Backend user validation successful', apiUser);
+              const user = {
+                id: apiUser.id,
+                name: `${apiUser.first_name} ${apiUser.last_name}`.trim() || apiUser.username,
+                email: apiUser.email,
+                role: apiUser.role as UserRole
+              };
+              
+              setCurrentUser(user);
+              setRole(user.role);
+              localStorage.setItem('clearpass_user', JSON.stringify(user));
+            } else {
+              console.warn('❌ Backend returned no user');
+            }
+          } catch (backendError) {
+            console.error('🚨 Backend validation error:', backendError);
           }
         }
       } catch (error) {
-        console.error('Error fetching current user:', error);
-        // Clear invalid session data
+        console.error('🔴 Error fetching current user:', error);
         localStorage.removeItem('clearpass_user');
         setCurrentUser(null);
         setRole(null);
