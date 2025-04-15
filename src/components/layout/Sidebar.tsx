@@ -37,6 +37,13 @@ interface NavItemProps {
   end?: boolean;
 }
 
+interface NavItemData {
+  to: string;
+  icon: LucideIcon;
+  label: string;
+  end?: boolean;
+}
+
 const NavItem: React.FC<NavItemProps> = ({ 
   to, 
   icon: Icon, 
@@ -72,21 +79,21 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
   
   // Define navigation based on user role
   const getNavItems = () => {
-    const baseItems = [
+    const baseItems: NavItemData[] = [
       { to: '/dashboard', icon: Home, label: 'Home', end: true },
       { to: '/dashboard/overview', icon: BarChart2, label: 'Overview' },
     ];
     
-    const adminItems = [
+    const adminItems: NavItemData[] = [
       { to: '/dashboard/users', icon: Users, label: 'Users' },
       { to: '/dashboard/departments', icon: Building, label: 'Departments' },
     ];
     
-    const studentItems = [
+    const studentItems: NavItemData[] = [
       { to: '/dashboard/apply', icon: FileCheck, label: 'Apply' },
     ];
     
-    const sharedItems = [
+    const sharedItems: NavItemData[] = [
       { to: '/dashboard/requests', icon: ClipboardList, label: 'Requests' },
       { to: '/dashboard/documents', icon: FileText, label: 'Documents' },
       { to: '/dashboard/verification', icon: QrCode, label: 'Verification' },

@@ -142,8 +142,8 @@ const TwoFactorAuth: React.FC<TwoFactorAuthProps> = ({
                       onChange={setOtpValue}
                       render={({ slots }) => (
                         <InputOTPGroup>
-                          {slots.map((slot, index) => (
-                            <InputOTPSlot key={index} {...slot} />
+                          {slots.map((slot, i) => (
+                            <InputOTPSlot key={i} {...slot} index={i} />
                           ))}
                         </InputOTPGroup>
                       )}
@@ -182,8 +182,8 @@ const TwoFactorAuth: React.FC<TwoFactorAuthProps> = ({
                     onChange={setOtpValue}
                     render={({ slots }) => (
                       <InputOTPGroup>
-                        {slots.map((slot, index) => (
-                          <InputOTPSlot key={index} {...slot} />
+                        {slots.map((slot, i) => (
+                          <InputOTPSlot key={i} {...slot} index={i} />
                         ))}
                       </InputOTPGroup>
                     )}

@@ -8,7 +8,11 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
 
-const LoginForm: React.FC = () => {
+interface LoginFormProps {
+  onLoginStart?: (email: string) => void;
+}
+
+const LoginForm: React.FC<LoginFormProps> = ({ onLoginStart }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -25,6 +29,12 @@ const LoginForm: React.FC = () => {
     
     try {
       setIsLoading(true);
+      
+      // Notify parent component about login start (for 2FA)
+      if (onLoginStart) {
+        onLoginStart(email);
+      }
+      
       await login(email, password);
       toast.success('Logged in successfully!');
       navigate('/dashboard');
