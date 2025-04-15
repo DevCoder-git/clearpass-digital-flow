@@ -1,10 +1,9 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
-import { FileText, ArrowRight, CheckCircle, Clock, XCircle } from 'lucide-react';
+import { FileText, ArrowRight, CheckCircle, Clock, XCircle, BookOpen, QrCode } from 'lucide-react';
 
 const Index: React.FC = () => {
   const { isAuthenticated } = useAuth();
@@ -149,6 +148,38 @@ const Index: React.FC = () => {
           </div>
         </div>
       </section>
+      
+      {/* Documentation and Verification Section */}
+      <main className="flex-grow container mx-auto px-4 py-12">
+        <section className="py-16 bg-secondary/10 rounded-3xl my-16">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl font-bold text-center mb-8">Resources & Verification</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="bg-background rounded-xl p-6 shadow-lg flex flex-col items-center text-center">
+                <BookOpen className="h-12 w-12 text-primary mb-4" />
+                <h3 className="text-xl font-semibold mb-2">Documentation Center</h3>
+                <p className="text-muted-foreground mb-6">
+                  Access comprehensive guides, tutorials, and FAQs about the ClearPass system.
+                </p>
+                <Button asChild className="mt-auto">
+                  <Link to="/documentation">Browse Documentation</Link>
+                </Button>
+              </div>
+              
+              <div className="bg-background rounded-xl p-6 shadow-lg flex flex-col items-center text-center">
+                <QrCode className="h-12 w-12 text-primary mb-4" />
+                <h3 className="text-xl font-semibold mb-2">Certificate Verification</h3>
+                <p className="text-muted-foreground mb-6">
+                  Verify the authenticity of clearance certificates using QR codes or certificate IDs.
+                </p>
+                <Button asChild className="mt-auto">
+                  <Link to="/verification">Verify Certificate</Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
       
       {/* Footer */}
       <footer className="bg-secondary py-8">

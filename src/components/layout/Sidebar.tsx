@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -21,7 +20,9 @@ import {
   User,
   Users,
   Building,
-  Shield
+  Shield,
+  BookOpen,
+  Settings
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -77,7 +78,6 @@ const NavItem: React.FC<NavItemProps> = ({
 const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
   const { currentUser, role, logout } = useAuth();
   
-  // Define navigation based on user role
   const getNavItems = () => {
     const baseItems: NavItemData[] = [
       { to: '/dashboard', icon: Home, label: 'Home', end: true },
@@ -97,7 +97,8 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
       { to: '/dashboard/requests', icon: ClipboardList, label: 'Requests' },
       { to: '/dashboard/documents', icon: FileText, label: 'Documents' },
       { to: '/dashboard/verification', icon: QrCode, label: 'Verification' },
-      { to: '/dashboard/settings', icon: CogIcon, label: 'Settings' },
+      { to: '/dashboard/documentation', icon: BookOpen, label: 'Documentation' },
+      { to: '/dashboard/settings', icon: Settings, label: 'Settings' },
     ];
     
     switch (role) {
@@ -108,7 +109,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
       case 'student':
         return [...baseItems, ...studentItems, ...sharedItems];
       default:
-        return baseItems;
+        return [...baseItems, ...sharedItems];
     }
   };
 
@@ -130,7 +131,6 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
         collapsed ? 'w-16' : 'w-64'
       }`}
     >
-      {/* Toggle button */}
       <button
         className="absolute -right-3 top-5 p-1 rounded-full border bg-background text-foreground"
         onClick={() => setCollapsed(!collapsed)}
@@ -143,7 +143,6 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
         )}
       </button>
       
-      {/* Logo */}
       <div className={`flex items-center p-4 ${collapsed ? 'justify-center' : 'justify-start'}`}>
         <div className="flex items-center">
           <Shield className="h-8 w-8 text-primary" />
@@ -151,7 +150,6 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
         </div>
       </div>
       
-      {/* Navigation */}
       <ScrollArea className="flex-1 py-2 px-4">
         <nav className="space-y-1">
           {getNavItems().map((item) => (
@@ -167,7 +165,6 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
         </nav>
       </ScrollArea>
       
-      {/* User section */}
       <div className="border-t p-4">
         <div className={`flex ${collapsed ? 'flex-col justify-center items-center' : 'space-x-3 items-center'}`}>
           <Avatar className="h-8 w-8">
