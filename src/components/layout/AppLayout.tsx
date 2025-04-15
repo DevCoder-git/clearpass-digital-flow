@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import Sidebar from './Sidebar';
@@ -10,6 +10,7 @@ import ReminderService from '@/utils/reminderService';
 const AppLayout: React.FC = () => {
   const { isAuthenticated, role } = useAuth();
   const location = useLocation();
+  const [collapsed, setCollapsed] = useState(false);
   
   useEffect(() => {
     // Start the reminder service when the app layout is mounted
@@ -30,7 +31,7 @@ const AppLayout: React.FC = () => {
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Sidebar */}
-      <Sidebar />
+      <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
       
       {/* Main content */}
       <div className="flex-1 flex flex-col overflow-hidden">

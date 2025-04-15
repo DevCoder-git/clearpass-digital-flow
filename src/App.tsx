@@ -1,4 +1,5 @@
 
+import React, { useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,7 +14,6 @@ import Settings from "@/pages/Settings";
 import AppLayout from "@/components/layout/AppLayout";
 import ClearanceRequest from "@/components/clearance/ClearanceRequest";
 import NotFound from "@/pages/NotFound";
-import { useState } from "react";
 
 const App = () => {
   const [queryClient] = useState(() => new QueryClient());
