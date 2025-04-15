@@ -34,6 +34,16 @@ const defaultUser: User = {
   twoFactorEnabled: false
 };
 
+// Helper to check if we're in development mode
+const isDevelopment = () => {
+  return import.meta.env.DEV;
+};
+
+// Helper to check if we should use backend in development
+const shouldUseBackend = () => {
+  return import.meta.env.VITE_USE_BACKEND === 'true';
+};
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
@@ -104,7 +114,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (email: string, password: string, useTwoFactor = false) => {
     try {
       // For development, allow login without backend
-      if (process.env.NODE_ENV === 'development' && !process.env.USE_BACKEND) {
+      if (isDevelopment() && !shouldUseBackend()) {
         // Mock login for development
         let user = { ...defaultUser, email };
         
@@ -246,7 +256,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = async () => {
     try {
       // For production, call the logout API
-      if (process.env.NODE_ENV !== 'development' || process.env.USE_BACKEND) {
+      if (!isDevelopment() || shouldUseBackend()) {
         await apiLogout();
       }
     } catch (error) {
