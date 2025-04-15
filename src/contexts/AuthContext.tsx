@@ -10,14 +10,19 @@ interface User {
   name: string;
   email: string;
   role: UserRole;
+  twoFactorEnabled?: boolean;
 }
 
 interface AuthContextType {
   currentUser: User | null;
   role: UserRole;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string, useTwoFactor?: boolean) => Promise<void>;
   logout: () => void;
+  enableTwoFactor: () => Promise<boolean>;
+  disableTwoFactor: () => Promise<boolean>;
+  requiresTwoFactor?: boolean;
+  completeTwoFactorAuth: (code: string) => Promise<boolean>;
 }
 
 // Default values for development without backend
@@ -25,7 +30,8 @@ const defaultUser: User = {
   id: '1',
   name: 'John Doe',
   email: 'john.doe@example.com',
-  role: null
+  role: null,
+  twoFactorEnabled: false
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -43,6 +49,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [role, setRole] = useState<UserRole>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [requiresTwoFactor, setRequiresTwoFactor] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -66,7 +73,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 id: apiUser.id,
                 name: `${apiUser.first_name} ${apiUser.last_name}`.trim() || apiUser.username,
                 email: apiUser.email,
-                role: apiUser.role as UserRole
+                role: apiUser.role as UserRole,
+                twoFactorEnabled: apiUser.two_factor_enabled || false
               };
               
               setCurrentUser(user);
@@ -93,7 +101,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     fetchCurrentUser();
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string, useTwoFactor = false) => {
     try {
       // For development, allow login without backend
       if (process.env.NODE_ENV === 'development' && !process.env.USE_BACKEND) {
@@ -113,6 +121,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           user.role = 'student'; // Default role
         }
         
+        // Simulate two-factor auth
+        if (useTwoFactor) {
+          user.twoFactorEnabled = true;
+          setRequiresTwoFactor(true);
+          toast.info("Two-factor authentication required");
+          return;
+        }
+        
         setCurrentUser(user);
         setRole(user.role);
         setIsAuthenticated(true);
@@ -123,11 +139,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Production login using backend
       const apiUser = await apiLogin(email, password);
       
+      // Check if 2FA is enabled
+      if (apiUser.two_factor_enabled && useTwoFactor) {
+        setRequiresTwoFactor(true);
+        toast.info("Please enter your two-factor authentication code");
+        return;
+      }
+      
       const user = {
         id: apiUser.id,
         name: `${apiUser.first_name} ${apiUser.last_name}`.trim() || apiUser.username,
         email: apiUser.email,
-        role: apiUser.role as UserRole
+        role: apiUser.role as UserRole,
+        twoFactorEnabled: apiUser.two_factor_enabled || false
       };
       
       setCurrentUser(user);
@@ -138,6 +162,84 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.error('Login error:', error);
       toast.error('Login failed. Please check your credentials.');
       throw error;
+    }
+  };
+
+  const completeTwoFactorAuth = async (code: string): Promise<boolean> => {
+    // In a real app, this would validate the 2FA code with the backend
+    try {
+      // Simulate successful 2FA for demo
+      if (code.length === 6) {
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        if (currentUser) {
+          setIsAuthenticated(true);
+          setRequiresTwoFactor(false);
+          localStorage.setItem('clearpass_user', JSON.stringify(currentUser));
+          toast.success('Two-factor authentication successful');
+          return true;
+        }
+      }
+      
+      toast.error('Invalid verification code');
+      return false;
+    } catch (error) {
+      console.error('2FA error:', error);
+      toast.error('Two-factor authentication failed');
+      return false;
+    }
+  };
+
+  const enableTwoFactor = async (): Promise<boolean> => {
+    try {
+      if (!currentUser) {
+        toast.error('You must be logged in to enable two-factor authentication');
+        return false;
+      }
+      
+      // In a real app, this would enable 2FA with the backend
+      // Here we'll just update the local state
+      
+      const updatedUser = {
+        ...currentUser,
+        twoFactorEnabled: true
+      };
+      
+      setCurrentUser(updatedUser);
+      localStorage.setItem('clearpass_user', JSON.stringify(updatedUser));
+      toast.success('Two-factor authentication enabled');
+      return true;
+    } catch (error) {
+      console.error('Error enabling 2FA:', error);
+      toast.error('Failed to enable two-factor authentication');
+      return false;
+    }
+  };
+
+  const disableTwoFactor = async (): Promise<boolean> => {
+    try {
+      if (!currentUser) {
+        toast.error('You must be logged in to disable two-factor authentication');
+        return false;
+      }
+      
+      // In a real app, this would disable 2FA with the backend
+      // Here we'll just update the local state
+      
+      const updatedUser = {
+        ...currentUser,
+        twoFactorEnabled: false
+      };
+      
+      setCurrentUser(updatedUser);
+      localStorage.setItem('clearpass_user', JSON.stringify(updatedUser));
+      toast.success('Two-factor authentication disabled');
+      return true;
+    } catch (error) {
+      console.error('Error disabling 2FA:', error);
+      toast.error('Failed to disable two-factor authentication');
+      return false;
     }
   };
 
@@ -154,7 +256,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setCurrentUser(null);
       setRole(null);
       setIsAuthenticated(false);
+      setRequiresTwoFactor(false);
       localStorage.removeItem('clearpass_user');
+      toast.info('You have been logged out');
     }
   };
 
@@ -164,7 +268,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }
 
   return (
-    <AuthContext.Provider value={{ currentUser, role, isAuthenticated, login, logout }}>
+    <AuthContext.Provider 
+      value={{ 
+        currentUser, 
+        role, 
+        isAuthenticated, 
+        login, 
+        logout, 
+        enableTwoFactor, 
+        disableTwoFactor,
+        requiresTwoFactor,
+        completeTwoFactorAuth
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

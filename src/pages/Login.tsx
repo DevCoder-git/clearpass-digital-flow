@@ -1,23 +1,51 @@
 
-import React from 'react';
-import { Navigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import LoginForm from '@/components/auth/LoginForm';
+import TwoFactorAuth from '@/components/auth/TwoFactorAuth';
 
 const Login: React.FC = () => {
-  const { isAuthenticated } = useAuth();
-  
+  const { isAuthenticated, requiresTwoFactor, completeTwoFactorAuth } = useAuth();
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+
+  // If already authenticated, redirect to dashboard
   if (isAuthenticated) {
     return <Navigate to="/dashboard" replace />;
   }
-  
+
+  const handleTwoFactorComplete = async () => {
+    // In a real app, this would get the code from the input
+    // Here we're just simulating a successful verification
+    const success = await completeTwoFactorAuth('123456');
+    if (success) {
+      navigate('/dashboard');
+    }
+  };
+
+  const handleTwoFactorCancel = () => {
+    // Redirect back to login
+    window.location.reload();
+  };
+
+  const onLoginStart = (email: string) => {
+    setEmail(email);
+  };
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-background to-secondary p-4">
-      <div className="mb-8 text-center">
-        <h1 className="text-4xl font-bold text-primary mb-2">ClearPass</h1>
-        <p className="text-lg text-muted-foreground">Digital No Due Clearance System</p>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-background to-secondary/20">
+      <div className="w-full max-w-md p-8 space-y-8 bg-background rounded-lg shadow-xl border">
+        {requiresTwoFactor ? (
+          <TwoFactorAuth 
+            onVerified={handleTwoFactorComplete} 
+            onCancel={handleTwoFactorCancel}
+            email={email}
+          />
+        ) : (
+          <LoginForm onLoginStart={onLoginStart} />
+        )}
       </div>
-      <LoginForm />
     </div>
   );
 };
