@@ -1,73 +1,72 @@
-# Welcome to your Lovable project
 
-## Project info
+# ClearPass - Digital No Due Clearance System
 
-**URL**: https://lovable.dev/projects/841dd8f5-fbaa-4563-85b4-5aeb021b8ea3
+ClearPass is a digital clearance system that allows students to request and track clearance from various departments in an educational institution.
 
-## How can I edit this code?
+## Project Structure
 
-There are several ways of editing your application.
+- `backend/` - Django backend API
+- `src/` - React frontend
 
-**Use Lovable**
+## Setup Instructions
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/841dd8f5-fbaa-4563-85b4-5aeb021b8ea3) and start prompting.
+### Backend Setup
 
-Changes made via Lovable will be committed automatically to this repo.
+1. Navigate to the backend directory:
+```bash
+cd backend
+```
 
-**Use your preferred IDE**
+2. Create a virtual environment and run the setup script:
+```bash
+# On Unix/Linux/MacOS
+chmod +x run_backend.sh
+./run_backend.sh
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+# On Windows (using Git Bash or WSL)
+# If using PowerShell/CMD, you'll need to run the commands in the script manually
+chmod +x run_backend.sh
+./run_backend.sh
+```
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+The script will:
+- Create a virtual environment
+- Install the required dependencies
+- Run migrations
+- Set up initial test data
+- Start the Django development server on port 8000
 
-Follow these steps:
+### Frontend Setup
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+1. Install dependencies:
+```bash
+npm install
+```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+2. Run the development server:
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The frontend will be available at http://localhost:5173
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Default Test Users
 
-**Use GitHub Codespaces**
+The system comes with pre-configured test users:
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+- Admin: `admin@example.com` / `admin123`
+- Student: `student@example.com` / `student123`
+- Library Department: `library@example.com` / `library123`
+- Accounts Department: `accounts@example.com` / `accounts123`
 
-## What technologies are used for this project?
+## Features
 
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/841dd8f5-fbaa-4563-85b4-5aeb021b8ea3) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+- User authentication (Student, Department, Admin roles)
+- Clearance request submission
+- Request tracking and approval workflow
+- Digital certificate generation
+- Analytics dashboard
+- Mobile QR code verification
+- Document management
+- Real-time notifications
+- Automated reminders
