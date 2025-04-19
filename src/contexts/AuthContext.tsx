@@ -113,8 +113,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string, password: string, useTwoFactor = false) => {
     try {
-      // For development, allow login without backend
-      if (isDevelopment() && !shouldUseBackend()) {
+      console.log('Login attempt for:', email);
+      
+      // Always use mock login in development mode unless specifically configured to use backend
+      if (isDevelopment()) {
+        console.log('Using development mode login');
         // Mock login for development
         let user = { ...defaultUser, email };
         
@@ -143,31 +146,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setRole(user.role);
         setIsAuthenticated(true);
         localStorage.setItem('clearpass_user', JSON.stringify(user));
+        toast.success(`Welcome, ${user.name}!`);
         return;
       }
       
       // Production login using backend
-      const apiUser = await apiLogin(email, password);
-      
-      // Check if 2FA is enabled
-      if (apiUser.two_factor_enabled && useTwoFactor) {
-        setRequiresTwoFactor(true);
-        toast.info("Please enter your two-factor authentication code");
-        return;
+      try {
+        const apiUser = await apiLogin(email, password);
+        
+        // Check if 2FA is enabled
+        if (apiUser.two_factor_enabled && useTwoFactor) {
+          setRequiresTwoFactor(true);
+          toast.info("Please enter your two-factor authentication code");
+          return;
+        }
+        
+        const user = {
+          id: apiUser.id,
+          name: `${apiUser.first_name} ${apiUser.last_name}`.trim() || apiUser.username,
+          email: apiUser.email,
+          role: apiUser.role as UserRole,
+          twoFactorEnabled: apiUser.two_factor_enabled || false
+        };
+        
+        setCurrentUser(user);
+        setRole(user.role);
+        setIsAuthenticated(true);
+        localStorage.setItem('clearpass_user', JSON.stringify(user));
+      } catch (apiError) {
+        console.error('API login error:', apiError);
+        throw new Error('Authentication failed');
       }
-      
-      const user = {
-        id: apiUser.id,
-        name: `${apiUser.first_name} ${apiUser.last_name}`.trim() || apiUser.username,
-        email: apiUser.email,
-        role: apiUser.role as UserRole,
-        twoFactorEnabled: apiUser.two_factor_enabled || false
-      };
-      
-      setCurrentUser(user);
-      setRole(user.role);
-      setIsAuthenticated(true);
-      localStorage.setItem('clearpass_user', JSON.stringify(user));
     } catch (error) {
       console.error('Login error:', error);
       toast.error('Login failed. Please check your credentials.');

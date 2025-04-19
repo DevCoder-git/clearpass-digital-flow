@@ -35,11 +35,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginStart }) => {
         onLoginStart(email);
       }
       
+      // In development mode, any password will work
       await login(email, password);
       toast.success('Logged in successfully!');
       navigate('/dashboard');
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('Login form error:', error);
       toast.error('Login failed. Please check your credentials.');
     } finally {
       setIsLoading(false);
