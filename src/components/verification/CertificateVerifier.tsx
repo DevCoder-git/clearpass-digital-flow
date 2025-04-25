@@ -3,10 +3,12 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { QrCode, Search, CheckCircle, XCircle, FileText, Clipboard, ArrowRight } from 'lucide-react';
+import { QrCode, Search, CheckCircle, XCircle, FileText, Clipboard, ArrowRight, Shield } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 import QRVerification from './QRVerification';
+import BlockchainVerification from './BlockchainVerification';
+import { BlockchainCertificateData } from '@/utils/blockchainVerification';
 
 interface VerificationResult {
   verified: boolean;
@@ -15,6 +17,7 @@ interface VerificationResult {
   studentId?: string;
   issueDate?: string;
   departments?: string[];
+  blockchainData?: BlockchainCertificateData;
 }
 
 const CertificateVerifier: React.FC = () => {
@@ -22,6 +25,7 @@ const CertificateVerifier: React.FC = () => {
   const [isVerifying, setIsVerifying] = useState<boolean>(false);
   const [verificationResult, setVerificationResult] = useState<VerificationResult | null>(null);
   const [activeTab, setActiveTab] = useState<string>('manual');
+  const [showBlockchainVerification, setShowBlockchainVerification] = useState<boolean>(false);
 
   const handleManualVerify = () => {
     if (!certificateId.trim()) {
@@ -45,12 +49,14 @@ const CertificateVerifier: React.FC = () => {
           issueDate: "2025-04-12",
           departments: ["Library", "Finance", "Housing", "Academic Affairs"]
         });
+        setShowBlockchainVerification(true);
         toast.success('Certificate verified successfully');
       } else {
         setVerificationResult({
           verified: false,
           certificateId: certificateId
         });
+        setShowBlockchainVerification(false);
         toast.error('Invalid certificate');
       }
       
@@ -68,14 +74,25 @@ const CertificateVerifier: React.FC = () => {
         issueDate: "2025-04-10",
         departments: ["Library", "Finance", "Housing", "Academic Affairs", "Sports"]
       });
+      setShowBlockchainVerification(true);
     } else {
       setVerificationResult({
         verified: false,
         certificateId: result.certificateId
       });
+      setShowBlockchainVerification(false);
     }
     
     setActiveTab('manual');
+  };
+
+  const handleBlockchainVerified = (blockchainData: BlockchainCertificateData) => {
+    if (verificationResult) {
+      setVerificationResult({
+        ...verificationResult,
+        blockchainData
+      });
+    }
   };
 
   const copyToClipboard = (text: string) => {
@@ -176,6 +193,15 @@ const CertificateVerifier: React.FC = () => {
                 />
               </TabsContent>
             </Tabs>
+
+            {showBlockchainVerification && verificationResult?.verified && (
+              <div className="mt-4">
+                <BlockchainVerification
+                  certificateId={verificationResult.certificateId}
+                  onVerified={handleBlockchainVerified}
+                />
+              </div>
+            )}
           </div>
 
           <div>
@@ -243,6 +269,19 @@ const CertificateVerifier: React.FC = () => {
                           ))}
                         </div>
                       </div>
+
+                      {verificationResult.blockchainData && (
+                        <div className="border border-blue-100 bg-blue-50/30 rounded-md p-3 mt-2">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Shield className="h-4 w-4 text-blue-500" />
+                            <h4 className="text-sm font-medium">Blockchain Verified</h4>
+                          </div>
+                          <div className="text-xs text-muted-foreground">
+                            <p>Transaction ID: {verificationResult.blockchainData.transactionId.substring(0, 10)}...{verificationResult.blockchainData.transactionId.substring(verificationResult.blockchainData.transactionId.length - 6)}</p>
+                            <p>Block: {verificationResult.blockchainData.blockNumber}</p>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <div className="flex flex-col items-center py-4">

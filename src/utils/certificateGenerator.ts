@@ -1,6 +1,7 @@
 
 import { jsPDF } from "jspdf";
 import { format } from "date-fns";
+import { registerCertificateOnBlockchain, generateBlockchainVerificationLink } from "./blockchainVerification";
 
 export interface CertificateData {
   studentName: string;
@@ -9,7 +10,20 @@ export interface CertificateData {
   certificateId: string;
 }
 
-export const generateClearanceCertificate = (data: CertificateData): Blob => {
+export const generateClearanceCertificate = async (data: CertificateData): Promise<Blob> => {
+  // First, register the certificate on blockchain
+  try {
+    await registerCertificateOnBlockchain({
+      certificateId: data.certificateId,
+      issuedTo: data.studentName,
+      issuedBy: "ClearPass University",
+      issuanceDate: data.completionDate
+    });
+  } catch (error) {
+    console.error("Error registering certificate on blockchain:", error);
+    // Continue generating the certificate even if blockchain registration fails
+  }
+
   const doc = new jsPDF({
     orientation: "landscape",
     unit: "mm",
@@ -79,6 +93,16 @@ export const generateClearanceCertificate = (data: CertificateData): Blob => {
     110,
     { align: "center" }
   );
+
+  // Blockchain verification info
+  doc.setFontSize(8);
+  doc.setFont("helvetica", "italic");
+  doc.text(
+    "This certificate is blockchain-verified for authenticity",
+    doc.internal.pageSize.getWidth() / 2,
+    118,
+    { align: "center" }
+  );
   
   // Add signatures
   doc.setFontSize(12);
@@ -101,12 +125,23 @@ export const generateClearanceCertificate = (data: CertificateData): Blob => {
     170,
     { align: "center" }
   );
+  
+  // Update verification text to include blockchain
+  const verificationUrl = generateBlockchainVerificationLink(data.certificateId);
   doc.text(
-    "This certificate can be verified online at clearpass.edu/verify",
+    "Verify this certificate online with blockchain technology at:",
     doc.internal.pageSize.getWidth() / 2,
-    180,
+    178,
     { align: "center" }
   );
+  doc.setTextColor(0, 102, 204);
+  doc.text(
+    verificationUrl,
+    doc.internal.pageSize.getWidth() / 2,
+    184,
+    { align: "center" }
+  );
+  doc.setTextColor(75, 75, 75);
   
   // Generate QR code placeholder (in a real implementation, you would generate an actual QR code)
   doc.setFillColor(0, 0, 0);
