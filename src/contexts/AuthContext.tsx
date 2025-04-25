@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { login as apiLogin, logout as apiLogout, getCurrentUser } from '@/api/authService';
 import { toast } from 'sonner';
@@ -73,28 +72,38 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setRole(parsedUser.role);
           setIsAuthenticated(true);
           
-          try {
-            console.log('🌐 Trying to validate user with backend...');
-            const apiUser = await getCurrentUser();
-            
-            if (apiUser) {
-              console.log('✅ Backend user validation successful', apiUser);
-              const user = {
-                id: apiUser.id,
-                name: `${apiUser.first_name} ${apiUser.last_name}`.trim() || apiUser.username,
-                email: apiUser.email,
-                role: apiUser.role as UserRole,
-                twoFactorEnabled: apiUser.two_factor_enabled || false
-              };
+          // Only try to validate with backend if we're configured to use it
+          if (!isDevelopment() || shouldUseBackend()) {
+            try {
+              console.log('🌐 Trying to validate user with backend...');
+              const apiUser = await getCurrentUser();
               
-              setCurrentUser(user);
-              setRole(user.role);
-              localStorage.setItem('clearpass_user', JSON.stringify(user));
-            } else {
-              console.warn('❌ Backend returned no user');
+              if (apiUser) {
+                console.log('✅ Backend user validation successful', apiUser);
+                const user = {
+                  id: apiUser.id,
+                  name: `${apiUser.first_name} ${apiUser.last_name}`.trim() || apiUser.username,
+                  email: apiUser.email,
+                  role: apiUser.role as UserRole,
+                  twoFactorEnabled: apiUser.two_factor_enabled || false
+                };
+                
+                setCurrentUser(user);
+                setRole(user.role);
+                localStorage.setItem('clearpass_user', JSON.stringify(user));
+              } else {
+                console.warn('❌ Backend returned no user');
+              }
+            } catch (backendError) {
+              console.error('🚨 Backend validation error:', backendError);
+              // Don't log out the user in development mode if backend fails
+              if (!isDevelopment()) {
+                localStorage.removeItem('clearpass_user');
+                setCurrentUser(null);
+                setRole(null);
+                setIsAuthenticated(false);
+              }
             }
-          } catch (backendError) {
-            console.error('🚨 Backend validation error:', backendError);
           }
         }
       } catch (error) {
@@ -115,7 +124,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       console.log('Login attempt for:', email);
       
-      // Always use mock login in development mode unless specifically configured to use backend
+      // Always use mock login in development mode
       if (isDevelopment()) {
         console.log('Using development mode login');
         // Mock login for development
@@ -179,8 +188,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     } catch (error) {
       console.error('Login error:', error);
-      toast.error('Login failed. Please check your credentials.');
-      throw error;
+      throw error; // Re-throw to let the component handle the error
     }
   };
 
@@ -265,8 +273,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = async () => {
     try {
       // For production, call the logout API
-      if (!isDevelopment() || shouldUseBackend()) {
-        await apiLogout();
+      if (!isDevelopment()) {
+        try {
+          await apiLogout();
+        } catch (error) {
+          console.error('API Logout error:', error);
+          // Continue with local logout even if API fails
+        }
       }
     } catch (error) {
       console.error('Logout error:', error);

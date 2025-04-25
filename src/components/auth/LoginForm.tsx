@@ -35,7 +35,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginStart }) => {
         onLoginStart(email);
       }
       
-      // In development mode, any password will work
       await login(email, password);
       toast.success('Logged in successfully!');
       navigate('/dashboard');
@@ -84,6 +83,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginStart }) => {
               disabled={isLoading}
               required
             />
+            <p className="text-xs text-muted-foreground">
+              For demo purposes, any password will work in development mode
+            </p>
           </div>
           
           <Button type="submit" className="w-full" disabled={isLoading}>
