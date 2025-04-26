@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -17,6 +18,7 @@ import NotFound from "@/pages/NotFound";
 import Documentation from "@/pages/Documentation";
 import Verification from "@/pages/Verification";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import DocumentManager from "@/components/document/DocumentManager"; // Add import for DocumentManager
 
 const App = () => {
   const [queryClient] = useState(() => new QueryClient());
@@ -42,6 +44,35 @@ const App = () => {
                   <Route path="documentation" element={<Documentation />} />
                   <Route path="verification" element={<Verification />} />
                   <Route path="settings" element={<Settings />} />
+                  <Route path="documents" element={
+                    // Render the DocumentManager component for the documents route
+                    <div className="p-8">
+                      <h2 className="text-2xl font-bold mb-4">Documents</h2>
+                      <div className="grid gap-6 md:grid-cols-2">
+                        <DocumentManager 
+                          requestId="req-123" 
+                          departmentName="Library" 
+                          status="pending" 
+                        />
+                        <DocumentManager 
+                          requestId="req-124" 
+                          departmentName="Accounts Department" 
+                          status="approved"
+                          existingDocuments={[
+                            {
+                              id: "doc1",
+                              name: "Fee Receipt.pdf",
+                              size: 256000,
+                              type: "application/pdf",
+                              url: "#",
+                              uploadDate: new Date().toISOString(),
+                              verified: true
+                            }
+                          ]}
+                        />
+                      </div>
+                    </div>
+                  } />
                 </Route>
               </Route>
               <Route path="*" element={<NotFound />} />
@@ -54,3 +85,4 @@ const App = () => {
 };
 
 export default App;
+
