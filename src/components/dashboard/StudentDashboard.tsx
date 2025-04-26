@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
@@ -7,8 +6,8 @@ import RequestList from '@/components/clearance/RequestList';
 import DashboardCard from '@/components/shared/DashboardCard';
 import { Progress } from '@/components/ui/progress';
 import { ClearanceStatus } from '@/components/shared/StatusBadge';
+import DigitalBadge from "@/components/shared/DigitalBadge";
 
-// Mock data for the student dashboard
 const recentRequests = [
   {
     id: '1',
@@ -46,9 +45,21 @@ const clearanceStatus = {
 
 const StudentDashboard: React.FC = () => {
   const progressPercentage = (clearanceStatus.approved / clearanceStatus.total) * 100;
-  
+
+  // Determine if all clearances are approved
+  const allCleared = clearanceStatus.approved === clearanceStatus.total;
+  const studentName = recentRequests[0]?.studentName || "Student";
+  const certificateId = "CLEAR-2025-00123"; // Use actual id if available in real data
+
   return (
     <div className="space-y-6">
+      {/* Show Digital Badge if all clearances approved */}
+      {allCleared && (
+        <section className="animate-fade-in">
+          <DigitalBadge studentName={studentName} certificateId={certificateId} />
+        </section>
+      )}
+      
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold tracking-tight">Student Dashboard</h1>
         <Link to="/dashboard/apply">
