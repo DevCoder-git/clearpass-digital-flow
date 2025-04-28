@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -5,8 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
-import { isDevelopment } from '@/utils/environmentUtils';
 
 interface LoginFormProps {
   onLoginStart?: (email: string) => void;
@@ -15,6 +16,7 @@ interface LoginFormProps {
 const LoginForm: React.FC<LoginFormProps> = ({ onLoginStart }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [selectedRole, setSelectedRole] = useState<'student' | 'admin' | ''>('');
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -22,27 +24,31 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginStart }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!email || !password) {
-      toast.error('Please enter both email and password');
+    if (!email || !password || !selectedRole) {
+      toast.error('Please fill in all fields including role selection');
       return;
     }
     
     try {
       setIsLoading(true);
       
-      // Notify parent component about login start (for 2FA)
       if (onLoginStart) {
         onLoginStart(email);
       }
       
+      // Pass the selected role to the login function
       await login(email, password);
       toast.success('Logged in successfully!');
-      navigate('/dashboard');
+      
+      // Navigate based on role
+      if (selectedRole === 'admin') {
+        navigate('/dashboard/admin');
+      } else {
+        navigate('/dashboard/student');
+      }
     } catch (error) {
       console.error('Login form error:', error);
-      
-      // Display more helpful error message
-      toast.error('Login failed. Please use student@example.com, department@example.com, or admin@example.com with any password.');
+      toast.error('Login failed. Please check your credentials and try again.');
     } finally {
       setIsLoading(false);
     }
@@ -59,6 +65,22 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginStart }) => {
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
+            <Label htmlFor="role">Select Role</Label>
+            <Select
+              value={selectedRole}
+              onValueChange={(value: 'student' | 'admin') => setSelectedRole(value)}
+            >
+              <SelectTrigger id="role">
+                <SelectValue placeholder="Select your role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="student">Student</SelectItem>
+                <SelectItem value="admin">Admin</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
@@ -69,9 +91,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginStart }) => {
               disabled={isLoading}
               required
             />
-            <p className="text-xs text-muted-foreground">
-              Hint: Use student@example.com, department@example.com, or admin@example.com
-            </p>
           </div>
           
           <div className="space-y-2">
@@ -85,9 +104,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginStart }) => {
               disabled={isLoading}
               required
             />
-            <p className="text-xs text-muted-foreground">
-              For demo purposes, any password will work in development mode
-            </p>
           </div>
           
           <Button type="submit" className="w-full" disabled={isLoading}>
@@ -97,7 +113,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginStart }) => {
       </CardContent>
       <CardFooter className="flex justify-center">
         <p className="text-sm text-muted-foreground">
-          For demo purposes, any password will work
+          For demo: Use any email with student/admin in it (e.g., student@example.com or admin@example.com)
         </p>
       </CardFooter>
     </Card>
