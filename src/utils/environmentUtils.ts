@@ -7,6 +7,12 @@ export const shouldUseBackend = () => {
   return import.meta.env.VITE_USE_BACKEND === 'true';
 };
 
+export const getApiBaseUrl = () => {
+  // In production, use relative URLs (already working properly in our case)
+  // In development, can use localhost or other URLs as needed
+  return '/api';
+};
+
 // Default values for development without backend
 export const defaultUser = {
   id: '1',
@@ -15,4 +21,3 @@ export const defaultUser = {
   role: null as 'student' | 'department' | 'admin' | null,
   twoFactorEnabled: false
 };
-

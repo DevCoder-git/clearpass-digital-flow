@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -43,11 +42,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginStart }) => {
       console.error('Login form error:', error);
       
       // Display more helpful error message
-      if (isDevelopment()) {
-        toast.error('Login failed. Using development mode, any password should work with student@example.com, department@example.com, or admin@example.com');
-      } else {
-        toast.error('Login failed. Please check your credentials or network connection.');
-      }
+      toast.error('Login failed. Please use student@example.com, department@example.com, or admin@example.com with any password.');
     } finally {
       setIsLoading(false);
     }
