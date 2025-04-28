@@ -19,6 +19,8 @@ import Documentation from "@/pages/Documentation";
 import Verification from "@/pages/Verification";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import DocumentManager from "@/components/document/DocumentManager";
+import AdminDashboard from "@/pages/admin/AdminDashboard";
+import StudentDashboard from "@/pages/student/StudentDashboard";
 
 const App = () => {
   const [queryClient] = useState(() => new QueryClient());
@@ -38,6 +40,8 @@ const App = () => {
               <Route element={<ProtectedRoute />}>
                 <Route path="/dashboard" element={<AppLayout />}>
                   <Route index element={<Dashboard />} />
+                  <Route path="admin" element={<AdminDashboard />} />
+                  <Route path="student" element={<StudentDashboard />} />
                   <Route path="overview" element={<Overview />} />
                   <Route path="apply" element={<ClearanceRequest />} />
                   <Route path="requests" element={<Requests />} />

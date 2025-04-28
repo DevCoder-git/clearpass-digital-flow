@@ -1,23 +1,21 @@
 
 import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import StudentDashboard from '@/components/dashboard/StudentDashboard';
-import DepartmentDashboard from '@/components/dashboard/DepartmentDashboard';
-import AdminDashboard from '@/components/dashboard/AdminDashboard';
+import { Navigate } from 'react-router-dom';
 
 const Dashboard: React.FC = () => {
   const { role } = useAuth();
   
   if (role === 'student') {
-    return <StudentDashboard />;
+    return <Navigate to="/dashboard/student" replace />;
   }
   
   if (role === 'department') {
-    return <DepartmentDashboard />;
+    return <Navigate to="/dashboard/requests" replace />;
   }
   
   if (role === 'admin') {
-    return <AdminDashboard />;
+    return <Navigate to="/dashboard/admin" replace />;
   }
   
   return (
