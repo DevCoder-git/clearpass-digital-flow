@@ -21,25 +21,17 @@ const AdminDashboard = () => {
     {
       id: '1',
       studentId: 's1',
-      studentName: 'John Doe',
+      studentName: localStorage.getItem('userName') || 'Unknown Student',
       departmentName: 'Library',
-      requestDate: '2023-03-15',
+      requestDate: new Date().toISOString().split('T')[0],
       status: 'pending',
     },
     {
       id: '2',
       studentId: 's2',
-      studentName: 'Jane Smith',
+      studentName: localStorage.getItem('userName') || 'Unknown Student',
       departmentName: 'Library',
-      requestDate: '2023-03-14',
-      status: 'pending',
-    },
-    {
-      id: '3',
-      studentId: 's3',
-      studentName: 'Alice Johnson',
-      departmentName: 'Accounts',
-      requestDate: '2023-03-13',
+      requestDate: new Date().toISOString().split('T')[0],
       status: 'pending',
     },
   ]);
@@ -66,6 +58,12 @@ const AdminDashboard = () => {
     toast.success('Request rejected successfully');
   };
 
+  // Get counts for the dashboard
+  const totalStudents = new Set(requests.map(r => r.studentId)).size;
+  const pendingRequests = requests.filter(r => r.status === 'pending').length;
+  const approvedRequests = requests.filter(r => r.status === 'approved').length;
+  const rejectedRequests = requests.filter(r => r.status === 'rejected').length;
+
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold tracking-tight">Admin Dashboard</h1>
@@ -74,28 +72,28 @@ const AdminDashboard = () => {
         <Card className="p-4 flex items-center space-x-4">
           <Users className="h-8 w-8 text-blue-500" />
           <div>
-            <h3 className="text-lg font-semibold">150</h3>
+            <h3 className="text-lg font-semibold">{totalStudents}</h3>
             <p className="text-sm text-muted-foreground">Total Students</p>
           </div>
         </Card>
         <Card className="p-4 flex items-center space-x-4">
           <Clock className="h-8 w-8 text-orange-500" />
           <div>
-            <h3 className="text-lg font-semibold">25</h3>
+            <h3 className="text-lg font-semibold">{pendingRequests}</h3>
             <p className="text-sm text-muted-foreground">Pending Requests</p>
           </div>
         </Card>
         <Card className="p-4 flex items-center space-x-4">
           <CheckCircle className="h-8 w-8 text-green-500" />
           <div>
-            <h3 className="text-lg font-semibold">75</h3>
+            <h3 className="text-lg font-semibold">{approvedRequests}</h3>
             <p className="text-sm text-muted-foreground">Approved Requests</p>
           </div>
         </Card>
         <Card className="p-4 flex items-center space-x-4">
           <XCircle className="h-8 w-8 text-red-500" />
           <div>
-            <h3 className="text-lg font-semibold">10</h3>
+            <h3 className="text-lg font-semibold">{rejectedRequests}</h3>
             <p className="text-sm text-muted-foreground">Rejected Requests</p>
           </div>
         </Card>

@@ -14,6 +14,8 @@ interface LoginFormProps {
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({ onLoginStart }) => {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [selectedRole, setSelectedRole] = useState<'student' | 'admin' | ''>('');
@@ -24,7 +26,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginStart }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!email || !password || !selectedRole) {
+    if (!firstName || !lastName || !email || !password || !selectedRole) {
       toast.error('Please fill in all fields including role selection');
       return;
     }
@@ -36,8 +38,11 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginStart }) => {
         onLoginStart(email);
       }
       
-      // Pass the selected role to the login function
+      // Pass user data to login function
       await login(email, password);
+      
+      // Store user name in localStorage for persistence
+      localStorage.setItem('userName', `${firstName} ${lastName}`);
       toast.success('Logged in successfully!');
       
       // Navigate based on role
@@ -64,6 +69,33 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginStart }) => {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="firstName">First Name</Label>
+              <Input
+                id="firstName"
+                type="text"
+                placeholder="Enter first name"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                disabled={isLoading}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="lastName">Last Name</Label>
+              <Input
+                id="lastName"
+                type="text"
+                placeholder="Enter last name"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                disabled={isLoading}
+                required
+              />
+            </div>
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="role">Select Role</Label>
             <Select

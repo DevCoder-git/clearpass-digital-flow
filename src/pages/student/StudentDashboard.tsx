@@ -20,13 +20,14 @@ interface RequestData {
 
 const StudentDashboard = () => {
   const { currentUser } = useAuth();
+  const userName = localStorage.getItem('userName') || 'Unknown Student';
 
-  // We'll use the existing mock data for now
+  // We'll use the existing mock data
   const requests: RequestData[] = [
     {
       id: '1',
       studentId: currentUser?.id || '',
-      studentName: currentUser?.name || '',
+      studentName: userName,
       departmentName: 'Library',
       requestDate: '2023-03-15',
       status: 'pending',
@@ -34,7 +35,7 @@ const StudentDashboard = () => {
     {
       id: '2',
       studentId: currentUser?.id || '',
-      studentName: currentUser?.name || '',
+      studentName: userName,
       departmentName: 'Accounts',
       requestDate: '2023-03-14',
       status: 'approved',
