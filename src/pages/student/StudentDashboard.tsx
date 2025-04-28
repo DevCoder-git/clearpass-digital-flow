@@ -6,19 +6,30 @@ import { Card } from '@/components/ui/card';
 import { FileText, Clock, CheckCircle, XCircle } from 'lucide-react';
 import RequestList from '@/components/clearance/RequestList';
 import { Link } from 'react-router-dom';
+import { ClearanceStatus } from '@/components/shared/StatusBadge';
+
+interface RequestData {
+  id: string;
+  studentId: string;
+  studentName: string;
+  departmentName: string;
+  requestDate: string;
+  status: ClearanceStatus;
+  comment?: string;
+}
 
 const StudentDashboard = () => {
   const { currentUser } = useAuth();
 
   // We'll use the existing mock data for now
-  const requests = [
+  const requests: RequestData[] = [
     {
       id: '1',
       studentId: currentUser?.id || '',
       studentName: currentUser?.name || '',
       departmentName: 'Library',
       requestDate: '2023-03-15',
-      status: 'pending' as const,
+      status: 'pending',
     },
     {
       id: '2',
@@ -26,7 +37,7 @@ const StudentDashboard = () => {
       studentName: currentUser?.name || '',
       departmentName: 'Accounts',
       requestDate: '2023-03-14',
-      status: 'approved' as const,
+      status: 'approved',
     },
   ];
 

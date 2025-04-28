@@ -4,16 +4,27 @@ import { Card } from '@/components/ui/card';
 import { Users, Clock, CheckCircle, XCircle } from 'lucide-react';
 import RequestList from '@/components/clearance/RequestList';
 import { toast } from 'sonner';
+import { ClearanceStatus } from '@/components/shared/StatusBadge';
+
+interface RequestData {
+  id: string;
+  studentId: string;
+  studentName: string;
+  departmentName: string;
+  requestDate: string;
+  status: ClearanceStatus;
+  comment?: string;
+}
 
 const AdminDashboard = () => {
-  const [requests, setRequests] = useState([
+  const [requests, setRequests] = useState<RequestData[]>([
     {
       id: '1',
       studentId: 's1',
       studentName: 'John Doe',
       departmentName: 'Library',
       requestDate: '2023-03-15',
-      status: 'pending' as const,
+      status: 'pending',
     },
     {
       id: '2',
@@ -21,7 +32,7 @@ const AdminDashboard = () => {
       studentName: 'Jane Smith',
       departmentName: 'Library',
       requestDate: '2023-03-14',
-      status: 'pending' as const,
+      status: 'pending',
     },
     {
       id: '3',
@@ -29,7 +40,7 @@ const AdminDashboard = () => {
       studentName: 'Alice Johnson',
       departmentName: 'Accounts',
       requestDate: '2023-03-13',
-      status: 'pending' as const,
+      status: 'pending',
     },
   ]);
 
@@ -37,7 +48,7 @@ const AdminDashboard = () => {
     setRequests(prev =>
       prev.map(request =>
         request.id === id
-          ? { ...request, status: 'approved' as const }
+          ? { ...request, status: 'approved' as ClearanceStatus }
           : request
       )
     );
@@ -48,7 +59,7 @@ const AdminDashboard = () => {
     setRequests(prev =>
       prev.map(request =>
         request.id === id
-          ? { ...request, status: 'rejected' as const, comment: reason }
+          ? { ...request, status: 'rejected' as ClearanceStatus, comment: reason }
           : request
       )
     );
