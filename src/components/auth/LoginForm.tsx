@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
+import { isDevelopment } from '@/utils/environmentUtils';
 
 interface LoginFormProps {
   onLoginStart?: (email: string) => void;
@@ -40,7 +41,13 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginStart }) => {
       navigate('/dashboard');
     } catch (error) {
       console.error('Login form error:', error);
-      toast.error('Login failed. Please check your credentials.');
+      
+      // Display more helpful error message
+      if (isDevelopment()) {
+        toast.error('Login failed. Using development mode, any password should work with student@example.com, department@example.com, or admin@example.com');
+      } else {
+        toast.error('Login failed. Please check your credentials or network connection.');
+      }
     } finally {
       setIsLoading(false);
     }

@@ -1,7 +1,8 @@
 
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8000/api';
+// Use relative URLs instead of hardcoded localhost URLs
+const API_URL = '/api';
 
 // Create axios instance with credentials
 const api = axios.create({
@@ -14,6 +15,7 @@ export const login = async (email: string, password: string) => {
     const response = await api.post('/auth/login/', { email, password });
     return response.data;
   } catch (error) {
+    console.error('API login error:', error);
     throw new Error('Authentication failed');
   }
 };
