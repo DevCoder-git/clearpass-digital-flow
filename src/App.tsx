@@ -18,18 +18,18 @@ import NotFound from "@/pages/NotFound";
 import Documentation from "@/pages/Documentation";
 import Verification from "@/pages/Verification";
 import ProtectedRoute from "@/components/ProtectedRoute";
-import DocumentManager from "@/components/document/DocumentManager"; // Add import for DocumentManager
+import DocumentManager from "@/components/document/DocumentManager";
 
 const App = () => {
   const [queryClient] = useState(() => new QueryClient());
 
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <AuthProvider>
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/login" element={<Login />} />
@@ -77,12 +77,11 @@ const App = () => {
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </AuthProvider>
+          </AuthProvider>
+        </BrowserRouter>
+      </TooltipProvider>
     </QueryClientProvider>
   );
 };
 
 export default App;
-

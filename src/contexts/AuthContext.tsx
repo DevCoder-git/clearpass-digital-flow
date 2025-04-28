@@ -4,6 +4,7 @@ import { AuthContextType } from '@/types/auth';
 import { useUserAuth } from '@/hooks/useUserAuth';
 import { useTwoFactorAuth } from '@/hooks/useTwoFactorAuth';
 
+// Create the auth context with a default value of undefined
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
@@ -34,6 +35,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   } = useTwoFactorAuth();
 
   useEffect(() => {
+    // Fetch the current user when the component mounts
     validateCurrentUser();
   }, []);
 
@@ -53,26 +55,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return await disable2FA(currentUser);
   };
 
+  // Create the context value
+  const contextValue: AuthContextType = { 
+    currentUser, 
+    role, 
+    isAuthenticated, 
+    login, 
+    logout, 
+    enableTwoFactor, 
+    disableTwoFactor,
+    requiresTwoFactor,
+    completeTwoFactorAuth
+  };
+
+  // Show a loading indicator while the auth state is being determined
   if (isLoading) {
     return <div className="flex items-center justify-center h-screen">Loading...</div>;
   }
 
   return (
-    <AuthContext.Provider 
-      value={{ 
-        currentUser, 
-        role, 
-        isAuthenticated, 
-        login, 
-        logout, 
-        enableTwoFactor, 
-        disableTwoFactor,
-        requiresTwoFactor,
-        completeTwoFactorAuth
-      }}
-    >
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );
 };
-
