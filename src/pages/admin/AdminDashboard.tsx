@@ -5,6 +5,7 @@ import { Users, Clock, CheckCircle, XCircle } from 'lucide-react';
 import RequestList from '@/components/clearance/RequestList';
 import { toast } from 'sonner';
 import { ClearanceStatus } from '@/components/shared/StatusBadge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface RequestData {
   id: string;
@@ -99,15 +100,54 @@ const AdminDashboard = () => {
         </Card>
       </div>
 
-      <Card className="p-6">
-        <h2 className="text-xl font-semibold mb-4">Pending Clearance Requests</h2>
-        <RequestList 
-          requests={requests.filter(r => r.status === 'pending')}
-          viewType="admin"
-          onApprove={handleApprove}
-          onReject={handleReject}
-        />
-      </Card>
+      <Tabs defaultValue="pending" className="w-full">
+        <TabsList className="mb-4">
+          <TabsTrigger value="pending">Pending Requests ({pendingRequests})</TabsTrigger>
+          <TabsTrigger value="approved">Approved Requests ({approvedRequests})</TabsTrigger>
+          <TabsTrigger value="rejected">Rejected Requests ({rejectedRequests})</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="pending" className="mt-0">
+          <Card className="p-6">
+            <h2 className="text-xl font-semibold mb-4">Pending Clearance Requests</h2>
+            <RequestList 
+              requests={requests.filter(r => r.status === 'pending')}
+              viewType="admin"
+              onApprove={handleApprove}
+              onReject={handleReject}
+            />
+            {pendingRequests === 0 && (
+              <p className="text-muted-foreground text-center py-4">No pending requests found.</p>
+            )}
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="approved" className="mt-0">
+          <Card className="p-6">
+            <h2 className="text-xl font-semibold mb-4">Approved Clearance Requests</h2>
+            <RequestList 
+              requests={requests.filter(r => r.status === 'approved')}
+              viewType="admin"
+            />
+            {approvedRequests === 0 && (
+              <p className="text-muted-foreground text-center py-4">No approved requests found.</p>
+            )}
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="rejected" className="mt-0">
+          <Card className="p-6">
+            <h2 className="text-xl font-semibold mb-4">Rejected Clearance Requests</h2>
+            <RequestList 
+              requests={requests.filter(r => r.status === 'rejected')}
+              viewType="admin"
+            />
+            {rejectedRequests === 0 && (
+              <p className="text-muted-foreground text-center py-4">No rejected requests found.</p>
+            )}
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

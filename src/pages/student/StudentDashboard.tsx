@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -20,16 +20,16 @@ interface RequestData {
 
 const StudentDashboard = () => {
   const { currentUser } = useAuth();
-  const userName = localStorage.getItem('userName') || 'Unknown Student';
+  const userName = localStorage.getItem('userName') || currentUser?.name || 'Unknown Student';
 
-  // We'll use the existing mock data
-  const requests: RequestData[] = [
+  // We'll use mock data with the actual user name
+  const [requests, setRequests] = useState<RequestData[]>([
     {
       id: '1',
       studentId: currentUser?.id || '',
       studentName: userName,
       departmentName: 'Library',
-      requestDate: '2023-03-15',
+      requestDate: new Date().toISOString().split('T')[0],
       status: 'pending',
     },
     {
@@ -37,10 +37,15 @@ const StudentDashboard = () => {
       studentId: currentUser?.id || '',
       studentName: userName,
       departmentName: 'Accounts',
-      requestDate: '2023-03-14',
+      requestDate: new Date().toISOString().split('T')[0],
       status: 'approved',
     },
-  ];
+  ]);
+
+  // Calculate counts for dashboard stats
+  const pendingRequests = requests.filter(r => r.status === 'pending').length;
+  const approvedRequests = requests.filter(r => r.status === 'approved').length;
+  const rejectedRequests = requests.filter(r => r.status === 'rejected').length;
 
   return (
     <div className="space-y-6">
@@ -58,21 +63,21 @@ const StudentDashboard = () => {
         <Card className="p-4 flex items-center space-x-4">
           <Clock className="h-8 w-8 text-orange-500" />
           <div>
-            <h3 className="text-lg font-semibold">2</h3>
+            <h3 className="text-lg font-semibold">{pendingRequests}</h3>
             <p className="text-sm text-muted-foreground">Pending Requests</p>
           </div>
         </Card>
         <Card className="p-4 flex items-center space-x-4">
           <CheckCircle className="h-8 w-8 text-green-500" />
           <div>
-            <h3 className="text-lg font-semibold">3</h3>
+            <h3 className="text-lg font-semibold">{approvedRequests}</h3>
             <p className="text-sm text-muted-foreground">Approved Requests</p>
           </div>
         </Card>
         <Card className="p-4 flex items-center space-x-4">
           <XCircle className="h-8 w-8 text-red-500" />
           <div>
-            <h3 className="text-lg font-semibold">1</h3>
+            <h3 className="text-lg font-semibold">{rejectedRequests}</h3>
             <p className="text-sm text-muted-foreground">Rejected Requests</p>
           </div>
         </Card>
