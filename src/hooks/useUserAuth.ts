@@ -37,6 +37,7 @@ export const useUserAuth = () => {
         setRole(user.role);
         setIsAuthenticated(true);
         localStorage.setItem('clearpass_user', JSON.stringify(user));
+        localStorage.setItem('userName', user.name); // Store name separately for easier access
         toast.success(`Welcome, ${user.name}!`);
         return;
       }
@@ -56,6 +57,7 @@ export const useUserAuth = () => {
         setRole(user.role);
         setIsAuthenticated(true);
         localStorage.setItem('clearpass_user', JSON.stringify(user));
+        localStorage.setItem('userName', user.name); // Store name separately for easier access
         toast.success(`Welcome, ${user.name}!`);
       } catch (apiError) {
         console.error('API login failed:', apiError);
@@ -82,6 +84,7 @@ export const useUserAuth = () => {
         setRole(user.role);
         setIsAuthenticated(true);
         localStorage.setItem('clearpass_user', JSON.stringify(user));
+        localStorage.setItem('userName', user.name); // Store name separately for easier access
         toast.success(`Welcome, ${user.name}! (Demo Mode)`);
       }
     } catch (error) {
@@ -106,6 +109,7 @@ export const useUserAuth = () => {
       setRole(null);
       setIsAuthenticated(false);
       localStorage.removeItem('clearpass_user');
+      localStorage.removeItem('userName'); // Also remove the userName
       toast.info('You have been logged out');
     }
   };
@@ -128,6 +132,7 @@ export const useUserAuth = () => {
         
         setCurrentUser(updatedUser);
         localStorage.setItem('clearpass_user', JSON.stringify(updatedUser));
+        localStorage.setItem('userName', name); // Also update the separate userName
         return true;
       }
       return false;
@@ -166,11 +171,13 @@ export const useUserAuth = () => {
               setCurrentUser(user);
               setRole(user.role);
               localStorage.setItem('clearpass_user', JSON.stringify(user));
+              localStorage.setItem('userName', user.name); // Also update the separate userName
             }
           } catch (backendError) {
             console.error('🚨 Backend validation error:', backendError);
             if (!isDevelopment()) {
               localStorage.removeItem('clearpass_user');
+              localStorage.removeItem('userName'); // Also remove the userName
               setCurrentUser(null);
               setRole(null);
               setIsAuthenticated(false);
@@ -181,6 +188,7 @@ export const useUserAuth = () => {
     } catch (error) {
       console.error('🔴 Error fetching current user:', error);
       localStorage.removeItem('clearpass_user');
+      localStorage.removeItem('userName'); // Also remove the userName
       setCurrentUser(null);
       setRole(null);
       setIsAuthenticated(false);

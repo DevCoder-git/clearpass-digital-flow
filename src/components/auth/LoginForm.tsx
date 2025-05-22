@@ -18,7 +18,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginStart }) => {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [selectedRole, setSelectedRole] = useState<'student' | 'admin' | ''>('');
+  const [selectedRole, setSelectedRole] = useState<'student' | 'admin' | 'department' | ''>('');
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -39,18 +39,17 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginStart }) => {
       }
       
       // Create email with role info for demo login
-      const roleEmail = selectedRole === 'admin' 
-        ? `admin_${email}` 
-        : `student_${email}`;
+      const roleEmail = `${selectedRole}_${email}`;
+      
+      // Store user name in localStorage for persistence
+      localStorage.setItem('userName', `${firstName} ${lastName}`);
       
       // Pass user data to login function
       await login(roleEmail, password);
       
-      // Store user name in localStorage for persistence
-      localStorage.setItem('userName', `${firstName} ${lastName}`);
       toast.success('Logged in successfully!');
       
-      // Navigate to dashboard - the Dashboard component will handle the rest
+      // Navigate to dashboard - the Dashboard component will handle role-based redirection
       navigate('/dashboard');
     } catch (error) {
       console.error('Login form error:', error);
@@ -101,7 +100,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginStart }) => {
             <Label htmlFor="role">Select Role</Label>
             <Select
               value={selectedRole}
-              onValueChange={(value: 'student' | 'admin') => setSelectedRole(value)}
+              onValueChange={(value: 'student' | 'admin' | 'department') => setSelectedRole(value)}
             >
               <SelectTrigger id="role">
                 <SelectValue placeholder="Select your role" />
@@ -109,6 +108,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginStart }) => {
               <SelectContent>
                 <SelectItem value="student">Student</SelectItem>
                 <SelectItem value="admin">Admin</SelectItem>
+                <SelectItem value="department">Department Head</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -146,7 +146,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginStart }) => {
       </CardContent>
       <CardFooter className="flex justify-center">
         <p className="text-sm text-muted-foreground">
-          For demo: Use any email address and select your role (admin/student)
+          For demo: Use any email address and select your role (admin/student/department)
         </p>
       </CardFooter>
     </Card>

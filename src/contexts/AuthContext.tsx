@@ -3,6 +3,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { AuthContextType } from '@/types/auth';
 import { useUserAuth } from '@/hooks/useUserAuth';
 import { useTwoFactorAuth } from '@/hooks/useTwoFactorAuth';
+import { toast } from 'sonner';
 
 // Create the auth context with a default value of undefined
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -57,7 +58,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const updateUserProfile = async (name: string, email: string) => {
-    return await updateUser(name, email);
+    try {
+      const result = await updateUser(name, email);
+      if (result) {
+        toast.success("Profile updated successfully");
+      }
+      return result;
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      toast.error("Failed to update profile");
+      return false;
+    }
   };
 
   // Create the context value
