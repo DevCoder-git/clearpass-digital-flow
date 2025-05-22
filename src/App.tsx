@@ -4,7 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "@/pages/Index";
 import Login from "@/pages/Login";
@@ -49,7 +49,6 @@ const App = () => {
                   <Route path="verification" element={<Verification />} />
                   <Route path="settings" element={<Settings />} />
                   <Route path="documents" element={
-                    // Render the DocumentManager component for the documents route
                     <div className="p-8">
                       <h2 className="text-2xl font-bold mb-4">Documents</h2>
                       <div className="grid gap-6 md:grid-cols-2">

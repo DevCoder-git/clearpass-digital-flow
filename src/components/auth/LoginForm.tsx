@@ -38,19 +38,20 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginStart }) => {
         onLoginStart(email);
       }
       
+      // Create email with role info for demo login
+      const roleEmail = selectedRole === 'admin' 
+        ? `admin_${email}` 
+        : `student_${email}`;
+      
       // Pass user data to login function
-      await login(email, password);
+      await login(roleEmail, password);
       
       // Store user name in localStorage for persistence
       localStorage.setItem('userName', `${firstName} ${lastName}`);
       toast.success('Logged in successfully!');
       
-      // Navigate based on role
-      if (selectedRole === 'admin') {
-        navigate('/dashboard/admin');
-      } else {
-        navigate('/dashboard/student');
-      }
+      // Navigate to dashboard - the Dashboard component will handle the rest
+      navigate('/dashboard');
     } catch (error) {
       console.error('Login form error:', error);
       toast.error('Login failed. Please check your credentials and try again.');
@@ -145,7 +146,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginStart }) => {
       </CardContent>
       <CardFooter className="flex justify-center">
         <p className="text-sm text-muted-foreground">
-          For demo: Use any email with student/admin in it (e.g., student@example.com or admin@example.com)
+          For demo: Use any email address and select your role (admin/student)
         </p>
       </CardFooter>
     </Card>

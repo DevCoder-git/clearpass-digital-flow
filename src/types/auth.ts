@@ -1,5 +1,5 @@
 
-export type UserRole = 'student' | 'department' | 'admin' | null;
+export type UserRole = 'admin' | 'student' | 'department' | null;
 
 export interface User {
   id: string;
@@ -14,10 +14,10 @@ export interface AuthContextType {
   role: UserRole;
   isAuthenticated: boolean;
   login: (email: string, password: string, useTwoFactor?: boolean) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   enableTwoFactor: () => Promise<boolean>;
   disableTwoFactor: () => Promise<boolean>;
-  requiresTwoFactor?: boolean;
+  requiresTwoFactor: boolean;
   completeTwoFactorAuth: (code: string) => Promise<boolean>;
+  updateUserProfile?: (name: string, email: string) => Promise<boolean>;
 }
-

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -28,13 +27,23 @@ import {
 } from 'lucide-react';
 
 const Settings: React.FC = () => {
-  const { currentUser, role } = useAuth();
+  const { currentUser, role, updateUserProfile } = useAuth();
   const [loading, setLoading] = useState(false);
   
   // Profile state
-  const [firstName, setFirstName] = useState(currentUser?.name.split(' ')[0] || '');
-  const [lastName, setLastName] = useState(currentUser?.name.split(' ')[1] || '');
-  const [email, setEmail] = useState(currentUser?.email || '');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  
+  // Reset form when currentUser changes
+  useEffect(() => {
+    if (currentUser) {
+      const nameParts = currentUser.name.split(' ');
+      setFirstName(nameParts[0] || '');
+      setLastName(nameParts.slice(1).join(' ') || '');
+      setEmail(currentUser.email || '');
+    }
+  }, [currentUser]);
   
   // Notification settings
   const [emailNotifications, setEmailNotifications] = useState(true);
@@ -69,11 +78,40 @@ const Settings: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
-      toast.success('Profile updated successfully');
-    }, 1000);
+    const fullName = `${firstName} ${lastName}`.trim();
+    
+    // Check if the function exists before calling it
+    if (typeof updateUserProfile === 'function') {
+      updateUserProfile(fullName, email)
+        .then(() => {
+          setLoading(false);
+          toast.success('Profile updated successfully');
+        })
+        .catch(error => {
+          console.error('Failed to update profile:', error);
+          setLoading(false);
+          toast.error('Failed to update profile');
+        });
+    } else {
+      // Simulate API call for demo purposes
+      setTimeout(() => {
+        // Store in localStorage for persistence
+        if (currentUser) {
+          const updatedUser = {
+            ...currentUser,
+            name: fullName,
+            email: email
+          };
+          localStorage.setItem('clearpass_user', JSON.stringify(updatedUser));
+          
+          // Trigger a page reload to reflect changes
+          window.location.reload();
+        }
+        
+        setLoading(false);
+        toast.success('Profile updated successfully');
+      }, 1000);
+    }
   };
   
   const handleNotificationUpdate = (e: React.FormEvent) => {

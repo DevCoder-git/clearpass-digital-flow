@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { AuthContextType } from '@/types/auth';
 import { useUserAuth } from '@/hooks/useUserAuth';
 import { useTwoFactorAuth } from '@/hooks/useTwoFactorAuth';
@@ -23,7 +23,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     isLoading,
     login: userLogin,
     logout,
-    validateCurrentUser
+    validateCurrentUser,
+    updateUserProfile: updateUser
   } = useUserAuth();
 
   const {
@@ -55,6 +56,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return await disable2FA(currentUser);
   };
 
+  const updateUserProfile = async (name: string, email: string) => {
+    return await updateUser(name, email);
+  };
+
   // Create the context value
   const contextValue: AuthContextType = { 
     currentUser, 
@@ -65,7 +70,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     enableTwoFactor, 
     disableTwoFactor,
     requiresTwoFactor,
-    completeTwoFactorAuth
+    completeTwoFactorAuth,
+    updateUserProfile
   };
 
   // Show a loading indicator while the auth state is being determined
