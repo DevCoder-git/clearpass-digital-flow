@@ -1,3 +1,4 @@
+
 """
 Django settings for clearpass_project project.
 """
@@ -61,15 +62,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'clearpass_project.wsgi.application'
 
-# Database configuration for Railway PostgreSQL
+# Database configuration
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('PGDATABASE'),
-        'USER': os.environ.get('PGUSER'),
-        'PASSWORD': os.environ.get('PGPASSWORD'),
-        'HOST': os.environ.get('PGHOST'),
-        'PORT': os.environ.get('PGPORT'),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
