@@ -1,6 +1,6 @@
 
 from rest_framework import viewsets, permissions, status
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.response import Response
 from django.contrib.auth import authenticate, login, logout
 from .models import User, Department, ClearanceRequest
@@ -54,8 +54,52 @@ class ClearanceRequestViewSet(viewsets.ModelViewSet):
         if request.user.role == User.DEPARTMENT and request.user == instance.department.head:
             return super().update(request, *args, **kwargs)
             
+        # Allow admins to update status
+        if request.user.role == User.ADMIN:
+            return super().update(request, *args, **kwargs)
+            
         return Response({"detail": "You don't have permission to update this request."},
                         status=status.HTTP_403_FORBIDDEN)
+    
+    @action(detail=True, methods=['post'])
+    def approve(self, request, pk=None):
+        instance = self.get_object()
+        
+        if request.user.role not in [User.ADMIN, User.DEPARTMENT]:
+            return Response({"detail": "Only admins and department heads can approve requests."},
+                           status=status.HTTP_403_FORBIDDEN)
+                           
+        if request.user.role == User.DEPARTMENT and request.user != instance.department.head:
+            return Response({"detail": "You can only approve requests for your department."},
+                           status=status.HTTP_403_FORBIDDEN)
+                           
+        instance.status = 'approved'
+        instance.save()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+    
+    @action(detail=True, methods=['post'])
+    def reject(self, request, pk=None):
+        instance = self.get_object()
+        reason = request.data.get('reason', '')
+        
+        if not reason:
+            return Response({"detail": "Rejection reason is required."},
+                           status=status.HTTP_400_BAD_REQUEST)
+        
+        if request.user.role not in [User.ADMIN, User.DEPARTMENT]:
+            return Response({"detail": "Only admins and department heads can reject requests."},
+                           status=status.HTTP_403_FORBIDDEN)
+                           
+        if request.user.role == User.DEPARTMENT and request.user != instance.department.head:
+            return Response({"detail": "You can only reject requests for your department."},
+                           status=status.HTTP_403_FORBIDDEN)
+                           
+        instance.status = 'rejected'
+        instance.comment = reason
+        instance.save()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])

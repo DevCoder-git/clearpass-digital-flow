@@ -19,6 +19,7 @@ export const useUserAuth = () => {
         console.log('Using development mode login');
         let user = { ...defaultUser, email };
         
+        // Set the correct role based on email
         if (email.includes('student')) {
           user.role = 'student';
           user.name = 'Student User';
@@ -55,6 +56,7 @@ export const useUserAuth = () => {
         setRole(user.role);
         setIsAuthenticated(true);
         localStorage.setItem('clearpass_user', JSON.stringify(user));
+        toast.success(`Welcome, ${user.name}!`);
       } catch (apiError) {
         console.error('API login failed:', apiError);
         
@@ -62,6 +64,7 @@ export const useUserAuth = () => {
         console.log('Falling back to demo mode login');
         let user = { ...defaultUser, email };
         
+        // Set the correct role based on email for the fallback as well
         if (email.includes('student')) {
           user.role = 'student';
           user.name = 'Student User';

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -78,9 +79,25 @@ const NavItem: React.FC<NavItemProps> = ({
 const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
   const { currentUser, role, logout } = useAuth();
   
+  // Determine the appropriate home path based on user role
+  const getHomePath = () => {
+    switch (role) {
+      case 'admin':
+        return '/dashboard/admin';
+      case 'student':
+        return '/dashboard/student';
+      case 'department':
+        return '/dashboard/requests';
+      default:
+        return '/dashboard';
+    }
+  };
+  
   const getNavItems = () => {
+    const homePath = getHomePath();
+    
     const baseItems: NavItemData[] = [
-      { to: '/dashboard', icon: Home, label: 'Home', end: true },
+      { to: homePath, icon: Home, label: 'Home', end: true },
       { to: '/dashboard/overview', icon: BarChart2, label: 'Overview' },
     ];
     

@@ -22,7 +22,7 @@ const AdminDashboard = () => {
     {
       id: '1',
       studentId: 's1',
-      studentName: localStorage.getItem('userName') || 'Unknown Student',
+      studentName: 'John Doe',
       departmentName: 'Library',
       requestDate: new Date().toISOString().split('T')[0],
       status: 'pending',
@@ -30,10 +30,35 @@ const AdminDashboard = () => {
     {
       id: '2',
       studentId: 's2',
-      studentName: localStorage.getItem('userName') || 'Unknown Student',
+      studentName: 'Jane Smith',
       departmentName: 'Library',
       requestDate: new Date().toISOString().split('T')[0],
       status: 'pending',
+    },
+    {
+      id: '3',
+      studentId: 's3',
+      studentName: 'Michael Johnson',
+      departmentName: 'Accounts',
+      requestDate: new Date().toISOString().split('T')[0],
+      status: 'pending',
+    },
+    {
+      id: '4',
+      studentId: 's4',
+      studentName: 'Emily Wilson',
+      departmentName: 'Hostel',
+      requestDate: new Date().toISOString().split('T')[0],
+      status: 'approved',
+    },
+    {
+      id: '5',
+      studentId: 's5',
+      studentName: 'Robert Brown',
+      departmentName: 'Sports',
+      requestDate: new Date().toISOString().split('T')[0],
+      status: 'rejected',
+      comment: 'Outstanding fees need to be cleared'
     },
   ]);
 
