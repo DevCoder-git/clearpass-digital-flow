@@ -54,9 +54,12 @@ const NavItem: React.FC<NavItemProps> = ({
   end = false
 }) => {
   const location = useLocation();
+  
+  // Fix: Properly determine if a route is active by exact path match when 'end' is true
+  // or by startsWith for nested routes when 'end' is false
   const isActive = end 
     ? location.pathname === to 
-    : location.pathname.startsWith(to);
+    : location.pathname === to || (to !== '/' && location.pathname.startsWith(to));
   
   return (
     <NavLink 
