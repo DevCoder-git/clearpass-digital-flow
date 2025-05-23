@@ -19,7 +19,19 @@ export const useAuthActions = (
       
       if (isDevelopment()) {
         console.log('Using development mode login');
-        const user = createDemoUser(email, defaultUser);
+        // Parse role from email for demo purposes
+        const roleParts = email.split('_');
+        let role = defaultUser.role;
+        
+        // If email contains role info (e.g., "admin_user@example.com")
+        if (roleParts.length > 1) {
+          const requestedRole = roleParts[0];
+          if (['admin', 'student', 'department'].includes(requestedRole)) {
+            role = requestedRole as UserRole;
+          }
+        }
+        
+        const user = createDemoUser(email, {...defaultUser, role});
         
         setCurrentUser(user);
         setRole(user.role);
@@ -46,7 +58,17 @@ export const useAuthActions = (
         
         // If API fails in production environment, fall back to mock login for demo
         console.log('Falling back to demo mode login');
-        const user = createDemoUser(email, defaultUser);
+        const roleParts = email.split('_');
+        let role = defaultUser.role;
+        
+        if (roleParts.length > 1) {
+          const requestedRole = roleParts[0];
+          if (['admin', 'student', 'department'].includes(requestedRole)) {
+            role = requestedRole as UserRole;
+          }
+        }
+        
+        const user = createDemoUser(email, {...defaultUser, role});
         
         setCurrentUser(user);
         setRole(user.role);
