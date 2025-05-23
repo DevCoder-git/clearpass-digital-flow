@@ -43,7 +43,7 @@ export const useAuthActions = (
         localStorage.setItem('userName', user.name);
         localStorage.setItem('userRole', user.role as string); // Store role separately for easier access
         
-        toast.success(`Welcome, ${user.name}!`);
+        toast.success(`Welcome, ${user.name}! (${user.role} role)`);
         return;
       }
       
@@ -61,7 +61,7 @@ export const useAuthActions = (
         localStorage.setItem('userName', user.name);
         localStorage.setItem('userRole', user.role as string); // Store role separately
         
-        toast.success(`Welcome, ${user.name}!`);
+        toast.success(`Welcome, ${user.name}! (${user.role} role)`);
       } catch (apiError) {
         console.error('API login failed:', apiError);
         
@@ -88,7 +88,7 @@ export const useAuthActions = (
         localStorage.setItem('userName', user.name);
         localStorage.setItem('userRole', user.role as string); // Store role separately
         
-        toast.success(`Welcome, ${user.name}! (Demo Mode)`);
+        toast.success(`Welcome, ${user.name}! (${user.role} role) (Demo Mode)`);
       }
     } catch (error) {
       console.error('Login error:', error);

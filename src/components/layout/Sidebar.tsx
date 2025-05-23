@@ -90,7 +90,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
       case 'student':
         return '/dashboard/student';
       case 'department':
-        return '/dashboard/department'; // Fixed: correct path for department heads
+        return '/dashboard/department';
       default:
         return '/dashboard';
     }
@@ -165,8 +165,8 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
       
       <div className={`flex items-center p-4 ${collapsed ? 'justify-center' : 'justify-start'}`}>
         <div className="flex items-center">
-          {/* Enhanced logo sizing when sidebar is collapsed - FIXED */}
-          <Shield className={`${collapsed ? 'h-12 w-12' : 'h-8 w-8'} text-primary transition-all duration-300`} />
+          {/* Fixed logo sizing to maintain proper proportions when minimized */}
+          <Shield className={`text-primary ${collapsed ? 'h-10 w-10' : 'h-8 w-8'} transition-all duration-300`} />
           {!collapsed && <span className="ml-2 text-xl font-bold">ClearPass</span>}
         </div>
       </div>
@@ -188,7 +188,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
       
       <div className="border-t p-4">
         <div className={`flex ${collapsed ? 'flex-col justify-center items-center' : 'space-x-3 items-center'}`}>
-          <Avatar className={`${collapsed ? 'h-12 w-12' : 'h-8 w-8'} transition-all duration-300`}>
+          <Avatar className={collapsed ? 'h-10 w-10' : 'h-8 w-8'}>
             <AvatarImage src={`https://ui-avatars.com/api/?name=${currentUser?.name}`} alt={currentUser?.name} />
             <AvatarFallback>{currentUser ? getInitials(currentUser.name) : 'U'}</AvatarFallback>
           </Avatar>
@@ -196,7 +196,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
           {!collapsed && (
             <div className="flex-1 overflow-hidden">
               <p className="text-sm font-medium truncate">{currentUser?.name}</p>
-              <p className="text-xs text-muted-foreground truncate">{currentUser?.email}</p>
+              <p className="text-xs text-muted-foreground truncate capitalize">{currentUser?.role}</p>
             </div>
           )}
           

@@ -46,7 +46,7 @@ const App = () => {
               <Route path="/verification" element={<Verification />} />
               <Route element={<ProtectedRoute />}>
                 <Route path="/dashboard" element={<AppLayout />}>
-                  {/* Redirect based on role */}
+                  {/* Improved role-based redirect logic */}
                   <Route index element={<Dashboard />} />
                   <Route path="admin" element={<AdminDashboard />} />
                   <Route path="student" element={<StudentDashboard />} />
