@@ -19,31 +19,14 @@ export const useAuthActions = (
       
       if (isDevelopment()) {
         console.log('Using development mode login');
-        // Parse role from email for demo purposes
-        const roleParts = email.split('_');
-        let role = defaultUser.role;
-        
-        // If email contains role info (e.g., "admin_user@example.com")
-        if (roleParts.length > 1) {
-          const requestedRole = roleParts[0];
-          if (['admin', 'student', 'department'].includes(requestedRole)) {
-            role = requestedRole as UserRole;
-          }
-        }
-        
-        // Create demo user with the proper role
-        const user = createDemoUser(email, {...defaultUser, role});
+        const user = createDemoUser(email, defaultUser);
         
         setCurrentUser(user);
         setRole(user.role);
         setIsAuthenticated(true);
-        
-        // Store user data in localStorage for persistence
         localStorage.setItem('clearpass_user', JSON.stringify(user));
         localStorage.setItem('userName', user.name);
-        localStorage.setItem('userRole', user.role as string); // Store role separately for easier access
-        
-        toast.success(`Welcome, ${user.name}! (${user.role} role)`);
+        toast.success(`Welcome, ${user.name}!`);
         return;
       }
       
@@ -55,40 +38,22 @@ export const useAuthActions = (
         setCurrentUser(user);
         setRole(user.role);
         setIsAuthenticated(true);
-        
-        // Store user data in localStorage for persistence
         localStorage.setItem('clearpass_user', JSON.stringify(user));
         localStorage.setItem('userName', user.name);
-        localStorage.setItem('userRole', user.role as string); // Store role separately
-        
-        toast.success(`Welcome, ${user.name}! (${user.role} role)`);
+        toast.success(`Welcome, ${user.name}!`);
       } catch (apiError) {
         console.error('API login failed:', apiError);
         
         // If API fails in production environment, fall back to mock login for demo
         console.log('Falling back to demo mode login');
-        const roleParts = email.split('_');
-        let role = defaultUser.role;
-        
-        if (roleParts.length > 1) {
-          const requestedRole = roleParts[0];
-          if (['admin', 'student', 'department'].includes(requestedRole)) {
-            role = requestedRole as UserRole;
-          }
-        }
-        
-        const user = createDemoUser(email, {...defaultUser, role});
+        const user = createDemoUser(email, defaultUser);
         
         setCurrentUser(user);
         setRole(user.role);
         setIsAuthenticated(true);
-        
-        // Store user data in localStorage for persistence
         localStorage.setItem('clearpass_user', JSON.stringify(user));
         localStorage.setItem('userName', user.name);
-        localStorage.setItem('userRole', user.role as string); // Store role separately
-        
-        toast.success(`Welcome, ${user.name}! (${user.role} role) (Demo Mode)`);
+        toast.success(`Welcome, ${user.name}! (Demo Mode)`);
       }
     } catch (error) {
       console.error('Login error:', error);
@@ -113,7 +78,6 @@ export const useAuthActions = (
       setIsAuthenticated(false);
       localStorage.removeItem('clearpass_user');
       localStorage.removeItem('userName');
-      localStorage.removeItem('userRole'); // Also remove the role from localStorage
       toast.info('You have been logged out');
     }
   };

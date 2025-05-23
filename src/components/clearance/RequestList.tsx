@@ -138,10 +138,7 @@ const RequestList: React.FC<RequestListProps> = ({
     }
   };
   
-  // Allow both department heads and admins to approve/reject
-  const canApproveOrReject = (viewType === 'department' && role === 'department') || 
-                             (viewType === 'admin' && role === 'admin');
-  
+  const canApproveOrReject = viewType === 'department' && role === 'department';
   const showDepartmentColumn = viewType !== 'department';
   const showStudentColumn = viewType !== 'student';
   const enableBatchSelection = Boolean(onSelectRequest) && (viewType === 'department' || viewType === 'admin');
@@ -205,18 +202,6 @@ const RequestList: React.FC<RequestListProps> = ({
                   <TableCell>{request.requestDate}</TableCell>
                   <TableCell>
                     <StatusBadge status={request.status} />
-                    {request.comment && (
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <div className="inline-flex ml-2 cursor-help">
-                            <AlertCircle size={14} className="text-muted-foreground" />
-                          </div>
-                        </TooltipTrigger>
-                        <TooltipContent className="max-w-xs">
-                          <p>{request.comment}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    )}
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end space-x-2">
@@ -277,27 +262,41 @@ const RequestList: React.FC<RequestListProps> = ({
                       
                       {canApproveOrReject && request.status === 'pending' && (
                         <>
-                          {/* Individual approve button */}
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            className="text-clearance-approved hover:bg-clearance-approved hover:text-white"
-                            onClick={() => onApprove && onApprove(request.id)}
-                          >
-                            <CheckCircle size={16} className="mr-1" />
-                            Approve
-                          </Button>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button 
+                                  variant="ghost" 
+                                  size="icon"
+                                  className="text-clearance-approved hover:text-clearance-approved/80"
+                                  onClick={() => onApprove && onApprove(request.id)}
+                                >
+                                  <CheckCircle size={16} />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Approve Request</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                           
-                          {/* Individual reject button */}
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            className="text-clearance-rejected hover:bg-clearance-rejected hover:text-white"
-                            onClick={() => handleReject(request.id)}
-                          >
-                            <XCircle size={16} className="mr-1" />
-                            Reject
-                          </Button>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button 
+                                  variant="ghost" 
+                                  size="icon"
+                                  className="text-clearance-rejected hover:text-clearance-rejected/80"
+                                  onClick={() => handleReject(request.id)}
+                                >
+                                  <XCircle size={16} />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Reject Request</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                         </>
                       )}
                     </div>

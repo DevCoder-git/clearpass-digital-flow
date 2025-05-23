@@ -54,12 +54,9 @@ const NavItem: React.FC<NavItemProps> = ({
   end = false
 }) => {
   const location = useLocation();
-  
-  // Fix: Properly determine if a route is active by exact path match when 'end' is true
-  // or by startsWith for nested routes when 'end' is false
   const isActive = end 
     ? location.pathname === to 
-    : location.pathname === to || (to !== '/' && location.pathname.startsWith(to));
+    : location.pathname.startsWith(to);
   
   return (
     <NavLink 
@@ -90,7 +87,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
       case 'student':
         return '/dashboard/student';
       case 'department':
-        return '/dashboard/department';
+        return '/dashboard/requests';
       default:
         return '/dashboard';
     }
@@ -165,8 +162,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
       
       <div className={`flex items-center p-4 ${collapsed ? 'justify-center' : 'justify-start'}`}>
         <div className="flex items-center">
-          {/* Fixed logo sizing to maintain proper proportions when minimized */}
-          <Shield className={`text-primary ${collapsed ? 'h-10 w-10' : 'h-8 w-8'} transition-all duration-300`} />
+          <Shield className="h-8 w-8 text-primary" />
           {!collapsed && <span className="ml-2 text-xl font-bold">ClearPass</span>}
         </div>
       </div>
@@ -188,7 +184,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
       
       <div className="border-t p-4">
         <div className={`flex ${collapsed ? 'flex-col justify-center items-center' : 'space-x-3 items-center'}`}>
-          <Avatar className={collapsed ? 'h-10 w-10' : 'h-8 w-8'}>
+          <Avatar className="h-8 w-8">
             <AvatarImage src={`https://ui-avatars.com/api/?name=${currentUser?.name}`} alt={currentUser?.name} />
             <AvatarFallback>{currentUser ? getInitials(currentUser.name) : 'U'}</AvatarFallback>
           </Avatar>
@@ -196,7 +192,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
           {!collapsed && (
             <div className="flex-1 overflow-hidden">
               <p className="text-sm font-medium truncate">{currentUser?.name}</p>
-              <p className="text-xs text-muted-foreground truncate capitalize">{currentUser?.role}</p>
+              <p className="text-xs text-muted-foreground truncate">{currentUser?.email}</p>
             </div>
           )}
           
