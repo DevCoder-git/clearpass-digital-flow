@@ -22,6 +22,10 @@ import DocumentManager from "@/components/document/DocumentManager";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import StudentDashboard from "@/pages/student/StudentDashboard";
 
+// New imports for admin routes
+import UsersManagement from "@/pages/admin/UsersManagement";
+import DepartmentsManagement from "@/pages/admin/DepartmentsManagement";
+
 const App = () => {
   const [queryClient] = useState(() => new QueryClient());
 
@@ -48,6 +52,8 @@ const App = () => {
                   <Route path="documentation" element={<Documentation />} />
                   <Route path="verification" element={<Verification />} />
                   <Route path="settings" element={<Settings />} />
+                  <Route path="users" element={<UsersManagement />} />
+                  <Route path="departments" element={<DepartmentsManagement />} />
                   <Route path="documents" element={
                     <div className="p-8">
                       <h2 className="text-2xl font-bold mb-4">Documents</h2>
