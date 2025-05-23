@@ -31,13 +31,18 @@ export const useAuthActions = (
           }
         }
         
+        // Create demo user with the proper role
         const user = createDemoUser(email, {...defaultUser, role});
         
         setCurrentUser(user);
         setRole(user.role);
         setIsAuthenticated(true);
+        
+        // Store user data in localStorage for persistence
         localStorage.setItem('clearpass_user', JSON.stringify(user));
         localStorage.setItem('userName', user.name);
+        localStorage.setItem('userRole', user.role as string); // Store role separately for easier access
+        
         toast.success(`Welcome, ${user.name}!`);
         return;
       }
@@ -50,8 +55,12 @@ export const useAuthActions = (
         setCurrentUser(user);
         setRole(user.role);
         setIsAuthenticated(true);
+        
+        // Store user data in localStorage for persistence
         localStorage.setItem('clearpass_user', JSON.stringify(user));
         localStorage.setItem('userName', user.name);
+        localStorage.setItem('userRole', user.role as string); // Store role separately
+        
         toast.success(`Welcome, ${user.name}!`);
       } catch (apiError) {
         console.error('API login failed:', apiError);
@@ -73,8 +82,12 @@ export const useAuthActions = (
         setCurrentUser(user);
         setRole(user.role);
         setIsAuthenticated(true);
+        
+        // Store user data in localStorage for persistence
         localStorage.setItem('clearpass_user', JSON.stringify(user));
         localStorage.setItem('userName', user.name);
+        localStorage.setItem('userRole', user.role as string); // Store role separately
+        
         toast.success(`Welcome, ${user.name}! (Demo Mode)`);
       }
     } catch (error) {
@@ -100,6 +113,7 @@ export const useAuthActions = (
       setIsAuthenticated(false);
       localStorage.removeItem('clearpass_user');
       localStorage.removeItem('userName');
+      localStorage.removeItem('userRole'); // Also remove the role from localStorage
       toast.info('You have been logged out');
     }
   };

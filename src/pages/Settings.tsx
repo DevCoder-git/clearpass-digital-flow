@@ -34,16 +34,36 @@ const Settings: React.FC = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
+  const [userRole, setUserRole] = useState<string>('');
   
-  // Reset form when currentUser changes
+  // Reset form when currentUser changes or on component mount
   useEffect(() => {
     if (currentUser) {
       const nameParts = currentUser.name.split(' ');
       setFirstName(nameParts[0] || '');
       setLastName(nameParts.slice(1).join(' ') || '');
       setEmail(currentUser.email || '');
+      
+      // Use the role from context first, then fallback to localStorage if needed
+      const displayRole = role || localStorage.getItem('userRole') || 'student';
+      setUserRole(displayRole);
+    } else {
+      // If no current user in context, try getting from localStorage
+      const savedUser = localStorage.getItem('clearpass_user');
+      if (savedUser) {
+        try {
+          const parsedUser = JSON.parse(savedUser);
+          const nameParts = parsedUser.name.split(' ');
+          setFirstName(nameParts[0] || '');
+          setLastName(nameParts.slice(1).join(' ') || '');
+          setEmail(parsedUser.email || '');
+          setUserRole(parsedUser.role || localStorage.getItem('userRole') || 'student');
+        } catch (e) {
+          console.error('Error parsing saved user:', e);
+        }
+      }
     }
-  }, [currentUser]);
+  }, [currentUser, role]);
   
   // Notification settings
   const [emailNotifications, setEmailNotifications] = useState(true);
@@ -103,6 +123,7 @@ const Settings: React.FC = () => {
             email: email
           };
           localStorage.setItem('clearpass_user', JSON.stringify(updatedUser));
+          localStorage.setItem('userName', fullName);
           
           // Trigger a page reload to reflect changes
           window.location.reload();
@@ -177,6 +198,12 @@ const Settings: React.FC = () => {
     }, 1000);
   };
 
+  // Format role for display with proper capitalization
+  const formatRole = (role: string): string => {
+    if (!role) return 'Student';
+    return role.charAt(0).toUpperCase() + role.slice(1);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -205,7 +232,7 @@ const Settings: React.FC = () => {
             <QrCode className="mr-2 h-4 w-4" />
             <span>Digital Features</span>
           </TabsTrigger>
-          {role === 'admin' && (
+          {userRole === 'admin' && (
             <TabsTrigger value="system" className="flex items-center">
               <Wrench className="mr-2 h-4 w-4" />
               <span>System</span>
@@ -259,7 +286,7 @@ const Settings: React.FC = () => {
                   <Label htmlFor="role">Role</Label>
                   <Input
                     id="role"
-                    value={role ? role.charAt(0).toUpperCase() + role.slice(1) : 'Student'}
+                    value={formatRole(userRole)}
                     disabled
                     className="bg-muted"
                   />
@@ -605,7 +632,7 @@ const Settings: React.FC = () => {
           </Card>
         </TabsContent>
         
-        {role === 'admin' && (
+        {userRole === 'admin' && (
           <TabsContent value="system" className="mt-6">
             <div className="grid gap-6">
               <Card>

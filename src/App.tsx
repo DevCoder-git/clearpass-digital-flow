@@ -26,7 +26,7 @@ import StudentDashboard from "@/pages/student/StudentDashboard";
 import UsersManagement from "@/pages/admin/UsersManagement";
 import DepartmentsManagement from "@/pages/admin/DepartmentsManagement";
 
-// New import for department dashboard
+// Import for department dashboard
 import DepartmentDashboard from "@/pages/department/DepartmentDashboard";
 
 const App = () => {
@@ -46,10 +46,11 @@ const App = () => {
               <Route path="/verification" element={<Verification />} />
               <Route element={<ProtectedRoute />}>
                 <Route path="/dashboard" element={<AppLayout />}>
+                  {/* Redirect based on role */}
                   <Route index element={<Dashboard />} />
                   <Route path="admin" element={<AdminDashboard />} />
                   <Route path="student" element={<StudentDashboard />} />
-                  <Route path="department" element={<DepartmentDashboard />} /> {/* Added department dashboard route */}
+                  <Route path="department" element={<DepartmentDashboard />} />
                   <Route path="overview" element={<Overview />} />
                   <Route path="apply" element={<ClearanceRequest />} />
                   <Route path="requests" element={<Requests />} />

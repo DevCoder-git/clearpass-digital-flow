@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -164,8 +165,8 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
       
       <div className={`flex items-center p-4 ${collapsed ? 'justify-center' : 'justify-start'}`}>
         <div className="flex items-center">
-          {/* Enhanced logo size when sidebar is collapsed */}
-          <Shield className={`${collapsed ? 'h-10 w-10' : 'h-8 w-8'} text-primary transition-all duration-300`} />
+          {/* Enhanced logo sizing when sidebar is collapsed - FIXED */}
+          <Shield className={`${collapsed ? 'h-12 w-12' : 'h-8 w-8'} text-primary transition-all duration-300`} />
           {!collapsed && <span className="ml-2 text-xl font-bold">ClearPass</span>}
         </div>
       </div>
@@ -187,7 +188,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
       
       <div className="border-t p-4">
         <div className={`flex ${collapsed ? 'flex-col justify-center items-center' : 'space-x-3 items-center'}`}>
-          <Avatar className={`${collapsed ? 'h-10 w-10' : 'h-8 w-8'} transition-all duration-300`}>
+          <Avatar className={`${collapsed ? 'h-12 w-12' : 'h-8 w-8'} transition-all duration-300`}>
             <AvatarImage src={`https://ui-avatars.com/api/?name=${currentUser?.name}`} alt={currentUser?.name} />
             <AvatarFallback>{currentUser ? getInitials(currentUser.name) : 'U'}</AvatarFallback>
           </Avatar>
