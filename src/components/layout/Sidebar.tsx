@@ -112,7 +112,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
     ];
     
     const departmentItems: NavItemData[] = [
-      // Department heads don't need Overview to avoid conflicts
+      { to: '/dashboard/staff-management', icon: Users, label: 'Staff Management' },
     ];
     
     const sharedItems: NavItemData[] = [
@@ -167,7 +167,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
       
       <div className={`flex items-center p-4 ${collapsed ? 'justify-center' : 'justify-start'}`}>
         <div className="flex items-center">
-          <Shield className={`text-primary transition-all duration-300 ${collapsed ? 'h-6 w-6' : 'h-8 w-8'}`} />
+          <Shield className={`text-primary transition-all duration-300 ${collapsed ? 'h-8 w-8' : 'h-8 w-8'}`} />
           {!collapsed && <span className="ml-2 text-xl font-bold">ClearPass</span>}
         </div>
       </div>

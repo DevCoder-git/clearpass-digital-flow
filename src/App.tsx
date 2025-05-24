@@ -24,6 +24,7 @@ import StudentDashboard from "@/pages/student/StudentDashboard";
 import DepartmentDashboardPage from "@/pages/department/DepartmentDashboard";
 import UserManagement from "@/pages/admin/UserManagement";
 import DepartmentManagement from "@/pages/admin/DepartmentManagement";
+import StaffManagementPage from "@/pages/department/StaffManagement";
 
 const App = () => {
   const [queryClient] = useState(() => new QueryClient());
@@ -51,6 +52,7 @@ const App = () => {
                   <Route path="requests" element={<Requests />} />
                   <Route path="users" element={<UserManagement />} />
                   <Route path="departments" element={<DepartmentManagement />} />
+                  <Route path="staff-management" element={<StaffManagementPage />} />
                   <Route path="documentation" element={<Documentation />} />
                   <Route path="verification" element={<Verification />} />
                   <Route path="settings" element={<Settings />} />
