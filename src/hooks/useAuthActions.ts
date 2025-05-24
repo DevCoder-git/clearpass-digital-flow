@@ -21,12 +21,15 @@ export const useAuthActions = (
         console.log('Using development mode login');
         const user = createDemoUser(email, defaultUser);
         
+        console.log('Created demo user:', user);
+        console.log('User role assigned:', user.role);
+        
         setCurrentUser(user);
         setRole(user.role);
         setIsAuthenticated(true);
         localStorage.setItem('clearpass_user', JSON.stringify(user));
         localStorage.setItem('userName', user.name);
-        toast.success(`Welcome, ${user.name}!`);
+        toast.success(`Welcome, ${user.name}! (${user.role})`);
         return;
       }
       
@@ -34,6 +37,8 @@ export const useAuthActions = (
       try {
         const apiUser = await apiLogin(email, password);
         const user = processUserData(apiUser);
+        
+        console.log('API user processed:', user);
         
         setCurrentUser(user);
         setRole(user.role);
@@ -48,12 +53,14 @@ export const useAuthActions = (
         console.log('Falling back to demo mode login');
         const user = createDemoUser(email, defaultUser);
         
+        console.log('Fallback demo user:', user);
+        
         setCurrentUser(user);
         setRole(user.role);
         setIsAuthenticated(true);
         localStorage.setItem('clearpass_user', JSON.stringify(user));
         localStorage.setItem('userName', user.name);
-        toast.success(`Welcome, ${user.name}! (Demo Mode)`);
+        toast.success(`Welcome, ${user.name}! (Demo Mode - ${user.role})`);
       }
     } catch (error) {
       console.error('Login error:', error);

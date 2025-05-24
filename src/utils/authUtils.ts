@@ -18,13 +18,20 @@ export const processUserData = (userData: any): User => {
  * Determines user role from email for demo purposes
  */
 export const determineUserRoleFromEmail = (email: string): UserRole => {
-  if (email.includes('student')) {
-    return 'student';
-  } else if (email.includes('department')) {
-    return 'department';
-  } else if (email.includes('admin')) {
+  console.log('Determining role for email:', email);
+  
+  if (email.includes('admin_')) {
+    console.log('Role determined: admin');
     return 'admin';
+  } else if (email.includes('department_')) {
+    console.log('Role determined: department');
+    return 'department';
+  } else if (email.includes('student_')) {
+    console.log('Role determined: student');
+    return 'student';
   }
+  
+  console.log('Role determined: student (default)');
   return 'student'; // Default role
 };
 
@@ -34,6 +41,9 @@ export const determineUserRoleFromEmail = (email: string): UserRole => {
 export const createDemoUser = (email: string, defaultUser: User): User => {
   const role = determineUserRoleFromEmail(email);
   let name = localStorage.getItem('userName') || 'User';
+  
+  console.log('Creating demo user with role:', role);
+  console.log('User name from localStorage:', name);
   
   // Assign a default name based on role if not provided
   if (!name || name === 'User') {
@@ -46,10 +56,13 @@ export const createDemoUser = (email: string, defaultUser: User): User => {
     }
   }
   
-  return {
+  const user = {
     ...defaultUser,
     name,
     email,
     role
   };
+  
+  console.log('Created demo user:', user);
+  return user;
 };

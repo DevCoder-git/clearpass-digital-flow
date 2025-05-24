@@ -162,7 +162,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
       
       <div className={`flex items-center p-4 ${collapsed ? 'justify-center' : 'justify-start'}`}>
         <div className="flex items-center">
-          <Shield className="h-8 w-8 text-primary" />
+          <Shield className={`text-primary transition-all duration-300 ${collapsed ? 'h-6 w-6' : 'h-8 w-8'}`} />
           {!collapsed && <span className="ml-2 text-xl font-bold">ClearPass</span>}
         </div>
       </div>
@@ -184,7 +184,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
       
       <div className="border-t p-4">
         <div className={`flex ${collapsed ? 'flex-col justify-center items-center' : 'space-x-3 items-center'}`}>
-          <Avatar className="h-8 w-8">
+          <Avatar className={`transition-all duration-300 ${collapsed ? 'h-6 w-6' : 'h-8 w-8'}`}>
             <AvatarImage src={`https://ui-avatars.com/api/?name=${currentUser?.name}`} alt={currentUser?.name} />
             <AvatarFallback>{currentUser ? getInitials(currentUser.name) : 'U'}</AvatarFallback>
           </Avatar>
@@ -192,7 +192,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
           {!collapsed && (
             <div className="flex-1 overflow-hidden">
               <p className="text-sm font-medium truncate">{currentUser?.name}</p>
-              <p className="text-xs text-muted-foreground truncate">{currentUser?.email}</p>
+              <p className="text-xs text-muted-foreground truncate capitalize">{currentUser?.role}</p>
             </div>
           )}
           

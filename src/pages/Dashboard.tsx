@@ -1,41 +1,38 @@
 
 import React, { useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
 import { Navigate } from 'react-router-dom';
-import { toast } from 'sonner';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Dashboard: React.FC = () => {
-  const { role, isAuthenticated } = useAuth();
-  
+  const { role, currentUser } = useAuth();
+
+  console.log('Dashboard component - Current role:', role);
+  console.log('Dashboard component - Current user:', currentUser);
+
+  // Redirect based on user role
   useEffect(() => {
-    // Log the current role for debugging purposes
-    console.log('Current user role in Dashboard:', role);
+    console.log('Dashboard useEffect - Role:', role);
   }, [role]);
-  
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+
+  if (!role) {
+    return <div className="flex items-center justify-center h-64">Loading...</div>;
   }
-  
-  if (role === 'student') {
-    return <Navigate to="/dashboard/student" replace />;
+
+  // Role-based redirection
+  switch (role) {
+    case 'admin':
+      console.log('Redirecting to admin dashboard');
+      return <Navigate to="/dashboard/admin" replace />;
+    case 'student':
+      console.log('Redirecting to student dashboard');
+      return <Navigate to="/dashboard/student" replace />;
+    case 'department':
+      console.log('Redirecting to department requests dashboard');
+      return <Navigate to="/dashboard/requests" replace />;
+    default:
+      console.log('Unknown role, redirecting to overview');
+      return <Navigate to="/dashboard/overview" replace />;
   }
-  
-  if (role === 'department') {
-    return <Navigate to="/dashboard/requests" replace />;
-  }
-  
-  if (role === 'admin') {
-    return <Navigate to="/dashboard/admin" replace />;
-  }
-  
-  // Display loading state while role is being determined
-  return (
-    <div className="flex items-center justify-center h-full">
-      <p className="text-center text-lg text-muted-foreground">
-        Loading your dashboard...
-      </p>
-    </div>
-  );
 };
 
 export default Dashboard;
