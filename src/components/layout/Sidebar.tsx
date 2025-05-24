@@ -87,7 +87,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
       case 'student':
         return '/dashboard/student';
       case 'department':
-        return '/dashboard/requests';
+        return '/dashboard/department';
       default:
         return '/dashboard';
     }
@@ -98,16 +98,21 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
     
     const baseItems: NavItemData[] = [
       { to: homePath, icon: Home, label: 'Home', end: true },
-      { to: '/dashboard/overview', icon: BarChart2, label: 'Overview' },
     ];
     
     const adminItems: NavItemData[] = [
+      { to: '/dashboard/overview', icon: BarChart2, label: 'Overview' },
       { to: '/dashboard/users', icon: Users, label: 'Users' },
       { to: '/dashboard/departments', icon: Building, label: 'Departments' },
     ];
     
     const studentItems: NavItemData[] = [
+      { to: '/dashboard/overview', icon: BarChart2, label: 'Overview' },
       { to: '/dashboard/apply', icon: FileCheck, label: 'Apply' },
+    ];
+    
+    const departmentItems: NavItemData[] = [
+      // Department heads don't need Overview to avoid conflicts
     ];
     
     const sharedItems: NavItemData[] = [
@@ -122,7 +127,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
       case 'admin':
         return [...baseItems, ...adminItems, ...sharedItems];
       case 'department':
-        return [...baseItems, ...sharedItems];
+        return [...baseItems, ...departmentItems, ...sharedItems];
       case 'student':
         return [...baseItems, ...studentItems, ...sharedItems];
       default:

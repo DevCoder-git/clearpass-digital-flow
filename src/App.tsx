@@ -21,6 +21,9 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import DocumentManager from "@/components/document/DocumentManager";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import StudentDashboard from "@/pages/student/StudentDashboard";
+import DepartmentDashboardPage from "@/pages/department/DepartmentDashboard";
+import UserManagement from "@/pages/admin/UserManagement";
+import DepartmentManagement from "@/pages/admin/DepartmentManagement";
 
 const App = () => {
   const [queryClient] = useState(() => new QueryClient());
@@ -42,9 +45,12 @@ const App = () => {
                   <Route index element={<Dashboard />} />
                   <Route path="admin" element={<AdminDashboard />} />
                   <Route path="student" element={<StudentDashboard />} />
+                  <Route path="department" element={<DepartmentDashboardPage />} />
                   <Route path="overview" element={<Overview />} />
                   <Route path="apply" element={<ClearanceRequest />} />
                   <Route path="requests" element={<Requests />} />
+                  <Route path="users" element={<UserManagement />} />
+                  <Route path="departments" element={<DepartmentManagement />} />
                   <Route path="documentation" element={<Documentation />} />
                   <Route path="verification" element={<Verification />} />
                   <Route path="settings" element={<Settings />} />

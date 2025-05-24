@@ -27,8 +27,8 @@ const Dashboard: React.FC = () => {
       console.log('Redirecting to student dashboard');
       return <Navigate to="/dashboard/student" replace />;
     case 'department':
-      console.log('Redirecting to department requests dashboard');
-      return <Navigate to="/dashboard/requests" replace />;
+      console.log('Redirecting to department dashboard');
+      return <Navigate to="/dashboard/department" replace />;
     default:
       console.log('Unknown role, redirecting to overview');
       return <Navigate to="/dashboard/overview" replace />;
