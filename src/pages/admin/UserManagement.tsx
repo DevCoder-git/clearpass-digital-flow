@@ -9,46 +9,16 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
-
-// Mock user data
-const mockUsers = [
-  {
-    id: '1',
-    name: 'John Doe',
-    email: 'john.doe@university.edu',
-    role: 'student',
-    department: 'Computer Science',
-    status: 'active',
-    joinDate: '2023-01-15'
-  },
-  {
-    id: '2',
-    name: 'Jane Smith',
-    email: 'jane.smith@university.edu',
-    role: 'department',
-    department: 'Library',
-    status: 'active',
-    joinDate: '2022-08-20'
-  },
-  {
-    id: '3',
-    name: 'Dr. Wilson',
-    email: 'wilson@university.edu',
-    role: 'department',
-    department: 'Accounts',
-    status: 'active',
-    joinDate: '2021-03-10'
-  },
-];
+import { useData } from '@/contexts/DataContext';
 
 const UserManagement: React.FC = () => {
-  const [users, setUsers] = useState(mockUsers);
+  const { users, departments, addUser, deleteUser } = useData();
   const [searchTerm, setSearchTerm] = useState('');
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
   const [newUser, setNewUser] = useState({
     name: '',
     email: '',
-    role: 'student',
+    role: 'student' as 'student' | 'department' | 'admin',
     department: ''
   });
 
@@ -57,6 +27,15 @@ const UserManagement: React.FC = () => {
     user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.department.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Group users by department for better organization
+  const usersByDepartment = filteredUsers.reduce((acc, user) => {
+    if (!acc[user.department]) {
+      acc[user.department] = [];
+    }
+    acc[user.department].push(user);
+    return acc;
+  }, {} as Record<string, typeof users>);
 
   const handleAddUser = () => {
     if (!newUser.name || !newUser.email || !newUser.department) {
@@ -67,34 +46,37 @@ const UserManagement: React.FC = () => {
     const user = {
       id: Date.now().toString(),
       ...newUser,
-      status: 'active',
+      status: 'active' as const,
       joinDate: new Date().toISOString().split('T')[0]
     };
 
-    setUsers([...users, user]);
+    addUser(user);
     setNewUser({ name: '', email: '', role: 'student', department: '' });
     setIsAddUserOpen(false);
     toast.success('User added successfully');
   };
 
   const handleDeleteUser = (userId: string) => {
-    setUsers(users.filter(user => user.id !== userId));
+    deleteUser(userId);
     toast.success('User deleted successfully');
   };
 
   const getRoleBadgeVariant = (role: string) => {
     switch (role) {
       case 'admin': return 'destructive';
-      case 'department': return 'warning';
-      case 'student': return 'info';
-      default: return 'default';
+      case 'department': return 'secondary';
+      case 'student': return 'default';
+      default: return 'outline';
     }
   };
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold tracking-tight">User Management</h1>
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">User Management</h1>
+          <p className="text-muted-foreground">Total Users: {users.length} | Departments: {departments.length}</p>
+        </div>
         <Button onClick={() => setIsAddUserOpen(true)}>
           <UserPlus className="h-4 w-4 mr-2" />
           Add User
@@ -103,9 +85,9 @@ const UserManagement: React.FC = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Users</CardTitle>
+          <CardTitle>Users by Department</CardTitle>
           <CardDescription>
-            Manage all users in the system
+            Manage all users organized by their departments
           </CardDescription>
           <div className="flex items-center space-x-2">
             <Search className="h-4 w-4 text-muted-foreground" />
@@ -118,35 +100,44 @@ const UserManagement: React.FC = () => {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {filteredUsers.map((user) => (
-              <div key={user.id} className="flex items-center justify-between p-4 border rounded-lg">
-                <div className="flex-1">
-                  <div className="flex items-center space-x-4">
-                    <div>
-                      <h3 className="font-medium">{user.name}</h3>
-                      <p className="text-sm text-muted-foreground">{user.email}</p>
-                    </div>
-                    <Badge variant={getRoleBadgeVariant(user.role)}>
-                      {user.role}
-                    </Badge>
-                    <div className="text-sm">
-                      <div className="font-medium">{user.department}</div>
-                      <div className="text-muted-foreground">Joined: {user.joinDate}</div>
-                    </div>
-                  </div>
+          <div className="space-y-6">
+            {Object.entries(usersByDepartment).map(([department, departmentUsers]) => (
+              <div key={department} className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold">{department}</h3>
+                  <Badge variant="outline">{departmentUsers.length} users</Badge>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <Button variant="outline" size="sm">
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={() => handleDeleteUser(user.id)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                <div className="space-y-2">
+                  {departmentUsers.map((user) => (
+                    <div key={user.id} className="flex items-center justify-between p-3 border rounded-lg bg-muted/50">
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-4">
+                          <div>
+                            <h4 className="font-medium">{user.name}</h4>
+                            <p className="text-sm text-muted-foreground">{user.email}</p>
+                          </div>
+                          <Badge variant={getRoleBadgeVariant(user.role)}>
+                            {user.role}
+                          </Badge>
+                          <div className="text-sm text-muted-foreground">
+                            Joined: {user.joinDate}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Button variant="outline" size="sm">
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => handleDeleteUser(user.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             ))}
@@ -188,7 +179,7 @@ const UserManagement: React.FC = () => {
             
             <div className="space-y-2">
               <Label htmlFor="role">Role</Label>
-              <Select value={newUser.role} onValueChange={(value) => setNewUser({ ...newUser, role: value })}>
+              <Select value={newUser.role} onValueChange={(value: 'student' | 'department' | 'admin') => setNewUser({ ...newUser, role: value })}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select role" />
                 </SelectTrigger>
@@ -202,12 +193,18 @@ const UserManagement: React.FC = () => {
             
             <div className="space-y-2">
               <Label htmlFor="department">Department</Label>
-              <Input
-                id="department"
-                value={newUser.department}
-                onChange={(e) => setNewUser({ ...newUser, department: e.target.value })}
-                placeholder="Enter department"
-              />
+              <Select value={newUser.department} onValueChange={(value) => setNewUser({ ...newUser, department: value })}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select department" />
+                </SelectTrigger>
+                <SelectContent>
+                  {departments.map((dept) => (
+                    <SelectItem key={dept.id} value={dept.name}>
+                      {dept.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
           

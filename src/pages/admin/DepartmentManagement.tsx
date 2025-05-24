@@ -8,49 +8,10 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
-
-// Mock department data
-const mockDepartments = [
-  {
-    id: '1',
-    name: 'Library',
-    description: 'Manages all library resources and clearances',
-    head: 'Jane Smith',
-    userCount: 45,
-    pendingRequests: 8,
-    status: 'active'
-  },
-  {
-    id: '2',
-    name: 'Accounts Department',
-    description: 'Handles financial clearances and fee verification',
-    head: 'Dr. Wilson',
-    userCount: 32,
-    pendingRequests: 12,
-    status: 'active'
-  },
-  {
-    id: '3',
-    name: 'Hostel',
-    description: 'Manages hostel clearances and room allocations',
-    head: 'Mr. Brown',
-    userCount: 28,
-    pendingRequests: 5,
-    status: 'active'
-  },
-  {
-    id: '4',
-    name: 'Sports Department',
-    description: 'Handles sports equipment and facility clearances',
-    head: 'Ms. Davis',
-    userCount: 18,
-    pendingRequests: 3,
-    status: 'active'
-  },
-];
+import { useData } from '@/contexts/DataContext';
 
 const DepartmentManagement: React.FC = () => {
-  const [departments, setDepartments] = useState(mockDepartments);
+  const { departments, addDepartment, deleteDepartment, systemStats } = useData();
   const [isAddDeptOpen, setIsAddDeptOpen] = useState(false);
   const [newDepartment, setNewDepartment] = useState({
     name: '',
@@ -69,24 +30,27 @@ const DepartmentManagement: React.FC = () => {
       ...newDepartment,
       userCount: 0,
       pendingRequests: 0,
-      status: 'active'
+      status: 'active' as const
     };
 
-    setDepartments([...departments, department]);
+    addDepartment(department);
     setNewDepartment({ name: '', description: '', head: '' });
     setIsAddDeptOpen(false);
     toast.success('Department added successfully');
   };
 
   const handleDeleteDepartment = (deptId: string) => {
-    setDepartments(departments.filter(dept => dept.id !== deptId));
+    deleteDepartment(deptId);
     toast.success('Department deleted successfully');
   };
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold tracking-tight">Department Management</h1>
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Department Management</h1>
+          <p className="text-muted-foreground">Total Departments: {systemStats.totalDepartments}</p>
+        </div>
         <Button onClick={() => setIsAddDeptOpen(true)}>
           <Plus className="h-4 w-4 mr-2" />
           Add Department

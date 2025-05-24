@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { DataProvider } from "@/contexts/DataContext";
 import Index from "@/pages/Index";
 import Login from "@/pages/Login";
 import Dashboard from "@/pages/Dashboard";
@@ -36,58 +37,60 @@ const App = () => {
         <Sonner />
         <BrowserRouter>
           <AuthProvider>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/documentation" element={<Documentation />} />
-              <Route path="/verification" element={<Verification />} />
-              <Route element={<ProtectedRoute />}>
-                <Route path="/dashboard" element={<AppLayout />}>
-                  <Route index element={<Dashboard />} />
-                  <Route path="admin" element={<AdminDashboard />} />
-                  <Route path="student" element={<StudentDashboard />} />
-                  <Route path="department" element={<DepartmentDashboardPage />} />
-                  <Route path="overview" element={<Overview />} />
-                  <Route path="apply" element={<ClearanceRequest />} />
-                  <Route path="requests" element={<Requests />} />
-                  <Route path="users" element={<UserManagement />} />
-                  <Route path="departments" element={<DepartmentManagement />} />
-                  <Route path="staff-management" element={<StaffManagementPage />} />
-                  <Route path="documentation" element={<Documentation />} />
-                  <Route path="verification" element={<Verification />} />
-                  <Route path="settings" element={<Settings />} />
-                  <Route path="documents" element={
-                    <div className="p-8">
-                      <h2 className="text-2xl font-bold mb-4">Documents</h2>
-                      <div className="grid gap-6 md:grid-cols-2">
-                        <DocumentManager 
-                          requestId="req-123" 
-                          departmentName="Library" 
-                          status="pending" 
-                        />
-                        <DocumentManager 
-                          requestId="req-124" 
-                          departmentName="Accounts Department" 
-                          status="approved"
-                          existingDocuments={[
-                            {
-                              id: "doc1",
-                              name: "Fee Receipt.pdf",
-                              size: 256000,
-                              type: "application/pdf",
-                              url: "#",
-                              uploadDate: new Date().toISOString(),
-                              verified: true
-                            }
-                          ]}
-                        />
+            <DataProvider>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/documentation" element={<Documentation />} />
+                <Route path="/verification" element={<Verification />} />
+                <Route element={<ProtectedRoute />}>
+                  <Route path="/dashboard" element={<AppLayout />}>
+                    <Route index element={<Dashboard />} />
+                    <Route path="admin" element={<AdminDashboard />} />
+                    <Route path="student" element={<StudentDashboard />} />
+                    <Route path="department" element={<DepartmentDashboardPage />} />
+                    <Route path="overview" element={<Overview />} />
+                    <Route path="apply" element={<ClearanceRequest />} />
+                    <Route path="requests" element={<Requests />} />
+                    <Route path="users" element={<UserManagement />} />
+                    <Route path="departments" element={<DepartmentManagement />} />
+                    <Route path="staff-management" element={<StaffManagementPage />} />
+                    <Route path="documentation" element={<Documentation />} />
+                    <Route path="verification" element={<Verification />} />
+                    <Route path="settings" element={<Settings />} />
+                    <Route path="documents" element={
+                      <div className="p-8">
+                        <h2 className="text-2xl font-bold mb-4">Documents</h2>
+                        <div className="grid gap-6 md:grid-cols-2">
+                          <DocumentManager 
+                            requestId="req-123" 
+                            departmentName="Library" 
+                            status="pending" 
+                          />
+                          <DocumentManager 
+                            requestId="req-124" 
+                            departmentName="Accounts Department" 
+                            status="approved"
+                            existingDocuments={[
+                              {
+                                id: "doc1",
+                                name: "Fee Receipt.pdf",
+                                size: 256000,
+                                type: "application/pdf",
+                                url: "#",
+                                uploadDate: new Date().toISOString(),
+                                verified: true
+                              }
+                            ]}
+                          />
+                        </div>
                       </div>
-                    </div>
-                  } />
+                    } />
+                  </Route>
                 </Route>
-              </Route>
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </DataProvider>
           </AuthProvider>
         </BrowserRouter>
       </TooltipProvider>
